@@ -1,0 +1,34 @@
+spring:
+  mail:
+    host: "smtp.gmail.com"
+    port: 587
+    username: "shuffle2149@gmail.com"
+    password: "xnghbaplcahetdtb"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+    #      use-new-id-generator-mappings: true
+    properties:
+      hibernate:
+        format_sql: true
+    generate-ddl: false
+
+  liquibase:
+    change-log: "db/changelog/db.changelog-master.xml"
+    enabled: true
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/ttvc"
+    #        ?createDatabaseIfNotExist=true
+    username: "shuffle"
+    password: "shuffle"

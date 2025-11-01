@@ -1,0 +1,22 @@
+CREATE TABLE IF NOT EXISTS account_user (
+                                ID BIGSERIAL PRIMARY KEY,
+                                username varchar(255) NOT NULL UNIQUE,
+                                password varchar(255) NOT NULL,
+                                firstname varchar(255) NOT NULL,
+                                lastname varchar(255) NOT NULL,
+                                observer_id bigint DEFAULT NULL,
+                                account_non_expired boolean DEFAULT false,
+                                account_non_locked boolean DEFAULT FALSE,
+                                credentials_non_expired boolean DEFAULT FALSE,
+                                enabled boolean NOT NULL DEFAULT FALSE,
+                                email varchar(100) DEFAULT NULL,
+                                phone varchar(30) NOT NULL,
+                                STATUS varchar(30) DEFAULT NULL,
+                                payment varchar(30) DEFAULT NULL,
+                                STATUS_PAYMENT boolean NOT NULL DEFAULT FALSE,
+                                VERSION int NOT NULL DEFAULT '0',
+                                CREATED_BY varchar(255) DEFAULT NULL,
+                                CREATED_DATE timestamp NULL DEFAULT NULL,
+                                LAST_MODIFIED_BY varchar(255) DEFAULT NULL,
+                                LAST_MODIFIED_DATE timestamp NULL DEFAULT NULL
+);

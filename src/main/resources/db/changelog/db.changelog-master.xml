@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <include
+            file="/db/changelog/createTables/create-table-account.xml" />
+    <include
+            file="/db/changelog/createTables/create-table-account_role.xml"/>
+    <include
+            file="/db/changelog/createTables/create-table-user.xml"/>
+    <include
+            file="/db/changelog/createTables/create-table-authority.xml"/>
+    <include
+            file="/db/changelog/createTables/create-table-confirmation_code.xml"/>
+    <include
+            file="/db/changelog/createTables/create-table-observer.xml"/>
+    <include
+            file="/db/changelog/createTables/create-table-role_authority.xml"/>
+    <include
+            file="/db/changelog/createTables/create-table-user_role.xml"/>
+    <include
+            file="/db/changelog/createTables/create-table-observer_image.xml"/>
+
+    <!-- =====> изменение таблиц <===== -->
+    <include
+            file="/db/changelog/modifyTable/modify-table-user-change.xml"/>
+<!--    <include-->
+<!--            file="db/changelog/modifyTable/modify-table-observer-change.xml"/>-->
+<!--    <include-->
+<!--            file="db/changelog/modifyTable/modify-table-observer-image.xml"/>-->
+    <!-- =====> наполнение таблиц <===== -->
+    <include
+            file="db/changelog/fillTables/fill-table-user.xml"/>
+    <include
+            file="db/changelog/fillTables/fill-table-account_role.xml"/>
+    <include
+            file="db/changelog/fillTables/fill-table-user_role.xml"/>
+    <include
+            file="db/changelog/fillTables/fill-table-authority.xml"/>
+    <include
+            file="db/changelog/fillTables/fill-table-observer.xml"/>
+    <include
+            file="db/changelog/fillTables/fill-table-role_authority.xml"/>
+    <include
+            file="db/changelog/fillTables/fill-table-observer_image.xml"/>
+
+</databaseChangeLog> 
