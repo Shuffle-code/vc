@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>footer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+            crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+<footer class="bg-dark text-center text-white fixed-bottom" th:fragment="footerBlock">
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+<!--    <div class="text-center p-3" style="background-color: #290464;">-->
+        © 2025 Прямая трансляция:
+        <a class="text-white" href="https://www.tt-nsk.ru/">tt-nsk.ru</a>
+<!--        <span th:if="${streamInfo.isLive}" class="status-live">Трансляция активна</span>-->
+<!--        <span th:unless="${streamInfo.isLive}" class="status-offline">Трансляция остановлена</span>-->
+<!--        Зрителей: <span th:text="${streamInfo.viewerCount}">24</span>-->
+    </div>
+</footer>
+
+</body>
+</html>

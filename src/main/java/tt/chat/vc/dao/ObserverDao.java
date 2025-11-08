@@ -20,6 +20,10 @@ public interface ObserverDao extends JpaRepository<Observer, Long> {
 //    @Query(value = "SELECT ID_TTWR FROM nsk_tt.player where ID_TTWR != 'null' & ID_TTWR != ''", nativeQuery = true)
 //    List<String> getIdTtw();
 
+    @Query(value = "SELECT ID FROM nsk_tt.player where ID_TTWR = :idTtw", nativeQuery = true)
+    Long getObserverIdByIdTtw(String idTtw);
+    @Query(value = "SELECT ID_TTWR FROM nsk_tt.player where ID_TTWR != 'null' & ID_TTWR != ''", nativeQuery = true)
+    List<String> getIdTtw();
 
     Optional<Observer> findByLastname(String title);
 //    @Query(value = "SELECT ID FROM nsk_tt.player where ID_TTWR = :idTtw", nativeQuery = true)

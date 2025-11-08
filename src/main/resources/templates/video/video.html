@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Система видеотрансляции</title>
+    <!-- Bootstrap 5.3.8 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .message {
+            padding: 0.5rem 0.75rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+        .incoming {
+            background-color: #e9ecef;
+            align-self: flex-start;
+        }
+
+    </style>
+</head>
+<body>
+<div th:replace="~{common/navbar :: navi(ObserverInfo)}"></div>
+<div class="container-fluid py-3">
+    <!-- Основной контент -->
+    <div class="row g-3">
+        <!-- Видео панель -->
+        <div class="col-lg-9">
+            <div class="row g-3">
+                <!-- Камера 1 -->
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center py-2">
+                            <span class="fw-bold">Камера 1</span>
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" id="camera1Toggle" checked>
+                                <label class="form-check-label" for="camera1Toggle">Активна</label>
+                            </div>
+                        </div>
+                        <div class="card-body p-0 video-container overflow-hidden">
+                            <div class="d-flex justify-content-center align-items-center bg-dark text-white" style="height: 432px;">
+                                <div>
+                                    <iframe width="576" height="432" src="https://rtsp.me/embed/6zFD98T4/"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Камера 2 -->
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center py-2">
+                            <span class="fw-bold">Камера 2</span>
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" id="camera2Toggle" checked>
+                                <label class="form-check-label" for="camera2Toggle">Активна</label>
+                            </div>
+                        </div>
+                        <div class="card-body p-0 video-container overflow-hidden">
+                            <div class="d-flex justify-content-center align-items-center bg-dark text-white"
+                                 style="height: 432px;">
+                                <div>
+                                    <iframe width="576" height="432"src="https://rtsp.me/embed/rtyiAy49/" ></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Панель управления камерами -->
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header py-2">
+                            <h6 class="mb-0">Участники трансляции</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Качество видео</label>
+                                    <select class="form-select">
+                                        <option>Высокое (1080p)</option>
+                                        <option>Среднее (720p)</option>
+                                        <option>Низкое (480p)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Частота кадров</label>
+                                    <select class="form-select">
+                                        <option>30 fps</option>
+                                        <option>25 fps</option>
+                                        <option>15 fps</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Аудио</label>
+                                    <select class="form-select">
+                                        <option>Включено</option>
+                                        <option>Выключено</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-primary">
+                                            <i class="bi bi-play-circle me-1"></i>Начать трансляцию
+                                        </button>
+                                        <button class="btn btn-outline-secondary">
+                                            <i class="bi bi-arrow-repeat me-1"></i>Перезапустить камеры
+                                        </button>
+                                        <button class="btn btn-outline-danger">
+                                            <i class="bi bi-stop-circle me-1"></i>Остановить все
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Чат -->
+        <div class="col-lg-3">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center py-2">
+                    <span class="fw-bold">Чат трансляции</span>
+                    <span class="badge bg-primary" th:text="${'Участников: ' + (onlineUsers != null ? onlineUsers : '12')}">
+                            Участников: 12
+                        </span>
+                </div>
+                <div class="card-body p-0 d-flex flex-column">
+                    <!-- Сообщения чата -->
+                    <div class="chat-messages d-flex flex-column p-3"
+                         style="height: 700px;
+               border: 1px solid #dee2e6;
+               padding: 1rem;
+               background-color: #f8f9fa;
+               " id="chatMessages ">
+                        <!-- Системное сообщение -->
+                        <!--            <div class="message system-message">-->
+                        <!--              <small>Трансляция началась. Приятного просмотра!</small>-->
+                        <!--            </div>-->
+
+
+                        <!--            &lt;!&ndash; Пример входящего сообщения &ndash;&gt;-->
+                        <!--            <div class="message incoming">-->
+                        <!--              <div class="fw-bold">Алексей Петров</div>-->
+                        <!--              <div>Отличное качество видео! Какая используется камера?</div>-->
+                        <!--              <small class="text-muted">14:25</small>-->
+                        <!--            </div>-->
+
+                        <!--            &lt;!&ndash; Пример исходящего сообщения &ndash;&gt;-->
+                        <!--            <div class="message outgoing">-->
+                        <!--              <div>Спасибо! Используем Sony A7III для основной камеры</div>-->
+                        <!--              <small>14:26</small>-->
+                        <!--            </div>-->
+
+                        <!--            &lt;!&ndash; Thymeleaf цикл для динамических сообщений &ndash;&gt;-->
+                        <!--            <div th:each="message : ${chatMessages}"-->
+                        <!--                 th:classappend="${message.type == 'SYSTEM'} ? 'system-message' :-->
+                        <!--                                                ${message.outgoing} ? 'outgoing message' : 'incoming message'"-->
+                        <!--                 class="message">-->
+                        <!--              <div th:if="${message.type != 'SYSTEM' and !message.outgoing}"-->
+                        <!--                   class="fw-bold" th:text="${message.senderName}">Имя отправителя</div>-->
+                        <!--              <div th:text="${message.content}">Текст сообщения</div>-->
+                        <!--              <small th:classappend="${message.type != 'SYSTEM' and message.outgoing} ? '' : 'text-muted'"-->
+                        <!--                     th:text="${message.timestamp}">14:30</small>-->
+                        <!--            </div>-->
+                    </div>
+
+                    <!-- Панель ввода сообщения -->
+                    <div class="p-3 border-top">
+                        <form th:action="@{/send-message}" method="post" class="d-flex gap-2">
+                            <div class="flex-grow-1">
+                                <input type="text"
+                                       class="form-control"
+                                       name="message"
+                                       placeholder="Введите сообщение..."
+                                       th:value="${newMessage != null ? newMessage : ''}">
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-send-fill"></i>
+                            </button>
+                        </form>
+                        <!--            <div class="mt-2 d-flex justify-content-between">-->
+                        <!--              <small class="text-muted">Сообщения видны всем участникам трансляции</small>-->
+                        <!--              <button class="btn btn-sm btn-outline-secondary">-->
+                        <!--                <i class="bi bi-emoji-smile"></i>-->
+                        <!--              </button>-->
+                        <!--            </div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--  &lt;!&ndash; Статус бар &ndash;&gt;-->
+    <!--  <div class="row mt-3">-->
+    <!--    <div class="col">-->
+    <!--      <div class="card">-->
+    <!--        <div class="card-body py-2">-->
+    <!--          <div class="d-flex justify-content-between align-items-center">-->
+    <!--            <div class="d-flex gap-4">-->
+    <!--              <div>-->
+    <!--                <i class="bi bi-camera-video text-success me-1"></i>-->
+    <!--                <small>Камера 1: <span class="fw-bold">Активна</span></small>-->
+    <!--              </div>-->
+    <!--              <div>-->
+    <!--                <i class="bi bi-camera-video text-success me-1"></i>-->
+    <!--                <small>Камера 2: <span class="fw-bold">Активна</span></small>-->
+    <!--              </div>-->
+    <!--              <div>-->
+    <!--                <i class="bi bi-record-circle text-danger me-1"></i>-->
+    <!--                <small>Запись: <span class="fw-bold">В процессе</span></small>-->
+    <!--              </div>-->
+    <!--            </div>-->
+    <!--            <div>-->
+    <!--              <small class="text-muted" th:text="${'Обновлено: ' + #temporals.format(#temporals.createNow(), 'HH:mm:ss')}">-->
+    <!--                Обновлено: 14:30:45-->
+    <!--              </small>-->
+    <!--            </div>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <!--  </div>-->
+</div>
+<div th:replace="~{common/footer :: footerBlock}"/>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Автопрокрутка чата к новым сообщениям
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatMessages = document.getElementById('chatMessages');
+        if (chatMessages) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Обработка отправки формы (для демонстрации)
+        const chatForm = document.querySelector('form[th\\:action="@{/send-message}"]');
+        if (chatForm) {
+            chatForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const input = this.querySelector('input[name="message"]');
+                if (input.value.trim()) {
+                    // В реальном приложении здесь будет AJAX-запрос
+                    console.log('Отправка сообщения:', input.value);
+                    input.value = '';
+                }
+            });
+        }
+
+        // Переключение камер
+        document.getElementById('camera1Toggle').addEventListener('change', function(e) {
+            console.log('Камера 1:', e.target.checked ? 'включена' : 'выключена');
+        });
+
+        document.getElementById('camera2Toggle').addEventListener('change', function(e) {
+            console.log('Камера 2:', e.target.checked ? 'включена' : 'выключена');
+        });
+    });
+</script>
+</body>
+</html>
+<div th:replace="~{common/footer :: footerBlock}"/>
+</body>
+</html>
+

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Игрок</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div th:replace="~{common/navbar :: navi(activeTab='Rules')}"></div>
+
+
+<h4 class="text-center">Основной формат и правила Турнира <a class="text-danger">♥</a> ️♣ <a class="text-danger">️♦</a> ️♠️ 500-700 : </h4>
+
+
+<div class="container">
+<div class="accordion" id="accordionExample">
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingTwo">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                <p class="text-primary"><strong>Правила:</strong></p>
+            </button>
+        </h2>
+        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <p>1.	Принять участие в турнире <a class="text-danger">♥</a> ️♣️<a class="text-danger">️♦</a> ️♠️ "500-700" могут только те, чей любительский рейтинг (ЛР)
+                    находиться в пределах названия группы (На сегодня это "500-700").</p>
+                <p>2.	Турнир проводится с обсчетом "коммерческого рейтинга" (TTNsk).</p>
+                <p>3.	Фо́ра (гандика́п) — начальное преимущество, намеренно предоставленное одной из сторон в соревновании, чтобы уравнять шансы на победу при разных силах и возможностях соревнующихся.
+                    Значения гандикапа расчитываются автоматически и выводятся в поле ввода результата игры. <a href="http://tt-nsk.site/tour">tt-nsk.site/tour</a></p>
+                <p>Игрок с более низким рейтингом имеет право воспользоваться гандикапом если разница в рейтинге:</p>
+                <p><strong>26-50 - 1очко</strong></p>
+                <p><strong>51-75 – 2 очка,</strong></p>
+                <p><strong>76-100 – 3 очка,</strong></p>
+                итд.
+                <p>4.	Сниматься с турнира без уважительной причины, расценивается как неуважение к соперникам.
+                    Из-за не сыгранной игры одного из участников может сильно изменится расстановка призовых мест +
+                    каждый игрок за 700 р имеет право сыграть заявленное количество игр.</p>
+                <p>5.	Участники записанные в резерве, не попавшие на текущий турнир автоматически записываются на следующий турнир.</p>
+                <p>6.	Регистрация на турнир заканчивается за 12 часов до начала турнира. Выписываться после окончания регистрации не желательно.</p>
+                <p>7.	Играем за всеми свободными  столами.</p>
+                <p>8.	Участие в турнире означает согласие с данными правилами.</p>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                <p class="text-primary"><strong>Количество участников, размер призовых:</strong></p>
+            </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <p><strong>12 участников</strong> – «В круг» до 3-х побед, max – 55 сетов. (1 место – 2000 р ,  2м–1500, 3м-1000, 4м-500. Приз за «Волю к победе» - 500). Взнос 700 р. Аренда 2900.</p>
+                <p><strong>11 участников</strong> – «В круг» до 3-х побед,  max – 50 сетов. (1 место – 2000 р, 2м–1500, 3м-1000, 4м-500) Взнос 700 р.  Аренда 2700.</p>
+                <p><strong>10 участников</strong> – «В круг» до 3-х побед,  max – 45 сетов. (1 место – 1900 р, 2м–1400, 3м-800, 4м-400) <s>взнос 750 р.</s> взнос 700 р. Аренда 2500.</p>
+                <p><strong>9 участников</strong> – «В круг» до 4-х побед,  max – 56 сетов.  (1 место – 1800 р, 2м–1200, 3м-700, 4м-300) <s>взнос 750 р.</s> взнос 700 р. Аренда 2300.</p>
+                <p><strong>8 участников</strong> – «В круг» до 4-х побед,  max – 49 сетов.  (1 место – 1700 р, 2м–1100, 3м-600, 4м-200) <s>взнос 750 р.</s> взнос 700 р. Аренда 2000.</p>
+                <p><strong>7 участников</strong> – не играем.</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                <p class="text-primary"><strong>Ставки:</strong></p>
+            </button>
+        </h2>
+        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <p><strong>Правила ставок для желающих сделать прогноз на следующий турнир:</strong></p>
+                <p>1. Надо угадать всех призеров.</p>
+                <p>2. Одна попытка: 50 р. (кол-во попыток не ограничено).</p>
+                <p>3. Принимаются до начала турнира.</p>
+                <p>4. Игрок текущего турнира не участвует в лотерее.</p>
+                <p>5.  Ставка сделанная на игрока не участвующего в турнире не принимается (Бывает, что снимаются в последний момент).</p>
+                <p><strong>Приз: 2 коробки «DJ40+ WTT» + 1000 р.</strong></p>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingFour">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                <p class="text-primary"><strong>Формула расчёта рейтинга:</strong></p>
+            </button>
+        </h2>
+        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <p>За основу <strong>TTNsk</strong>-Рейтинга взята официальная формула расчёта рейтинга, описанная в Положении ФНТР "О классификации игроков настольного тенниса Российской Федерации"</strong>.</p>
+                <p>Используется "старая" версия <strong>(до 2010 г.)</strong>. Она отличается от новой тем, что проигравшему игроку дельта считается так-же как победителю.</p>
+                <p>Новый рейтинг <strong>выигравшего и проигравшего</strong> игрока рассчитывается по формуле:</p>
+                <p><strong>Рв.нов = Pв.тек + Дельта</strong></p>
+                <p>Дельта считается по формуле:</p>
+                <p><strong>Дельта = (100 - Pв.тек + Pп.тек) / 10 * КТ</strong></p>
+                <p>где: Pв.тек и Pп.тек это текущие рейтинги выигравшего и проигравшего</p>
+                <p>Если рейтинг выигравшего более чем на 200 рейтинговых очков выше рейтинга проигравшего (Pв.тек - Pп.тек ) > 200, то в этом случае Дельта = 0</p>
+                <p>КТ - коэффициент турнира. Определяется от среднего рейтинга игроков турнира: КТ = R.avg / 4000. Результат выравнивается на 0.1</p>
+
+            </div>
+        </div>
+    </div>
+</div>
+    <foot>
+        <br>
+        <br>
+    </foot>
+</div>
+<div th:replace="~{common/footer :: footerBlock}"/>
+
+</body>
+</html>

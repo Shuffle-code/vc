@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Трансляция видео с двух камер и чат</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #1a1a2e;
+      color: #e6e6e6;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background-color: #16213e;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #4cc9f0;
+    }
+
+    .controls {
+      display: flex;
+      gap: 15px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background-color: #4cc9f0;
+      color: #16213e;
+    }
+
+    .btn-secondary {
+      background-color: #4361ee;
+      color: white;
+    }
+
+    .btn-danger {
+      background-color: #f72585;
+      color: white;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .video-section {
+      flex: 3;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .video-container {
+      display: flex;
+      gap: 20px;
+      height: 100%;
+    }
+
+    .video-box {
+      flex: 1;
+      background-color: #0f3460;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .video-header {
+      background-color: #16213e;
+      padding: 10px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .video-title {
+      font-weight: 600;
+      color: #4cc9f0;
+    }
+
+    .video-status {
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      background-color: #4cc9f0;
+      color: #16213e;
+    }
+
+    .video-placeholder {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #0d1b2a;
+      color: #6c757d;
+      font-size: 18px;
+    }
+
+    .video-controls {
+      background-color: #16213e;
+      padding: 10px 15px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .video-controls button {
+      background: none;
+      border: none;
+      color: #e6e6e6;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: color 0.3s;
+    }
+
+    .video-controls button:hover {
+      color: #4cc9f0;
+    }
+
+    .chat-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background-color: #16213e;
+      border-left: 1px solid #0f3460;
+    }
+
+    .chat-header {
+      padding: 15px 20px;
+      background-color: #0f3460;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-container {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .message {
+      padding: 10px 15px;
+      border-radius: 8px;
+      max-width: 80%;
+      word-wrap: break-word;
+    }
+
+    .message-incoming {
+      background-color: #0d1b2a;
+      align-self: flex-start;
+      border-bottom-left-radius: 0;
+    }
+
+    .message-outgoing {
+      background-color: #4361ee;
+      align-self: flex-end;
+      border-bottom-right-radius: 0;
+    }
+
+    .message-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      font-size: 12px;
+    }
+
+    .message-sender {
+      font-weight: bold;
+      color: #4cc9f0;
+    }
+
+    .message-time {
+      color: #adb5bd;
+    }
+
+    .message-text {
+      line-height: 1.4;
+    }
+
+    .chat-input {
+      padding: 15px;
+      background-color: #0f3460;
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 12px 15px;
+      border: none;
+      border-radius: 24px;
+      background-color: #1a1a2e;
+      color: #e6e6e6;
+      outline: none;
+    }
+
+    .chat-input button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 24px;
+      background-color: #4cc9f0;
+      color: #16213e;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .chat-input button:hover {
+      background-color: #3aa8d8;
+    }
+
+    .footer {
+      background-color: #16213e;
+      padding: 10px 20px;
+      text-align: center;
+      font-size: 14px;
+      color: #6c757d;
+      border-top: 1px solid #0f3460;
+    }
+
+    /* Анимации */
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+
+    .live-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background-color: #f72585;
+      border-radius: 50%;
+      margin-right: 5px;
+      animation: pulse 2s infinite;
+    }
+
+    .status-live {
+      color: #4cc9f0;
+    }
+
+    .status-offline {
+      color: #6c757d;
+    }
+  </style>
+</head>
+<body>
+<header class="header">
+  <div class="logo">VideoStream Pro</div>
+  <div class="controls">
+    <form th:if="${!streamInfo.isLive}" th:action="@{/stream/start}" method="post" style="display: inline;">
+      <button type="submit" class="btn btn-primary">Начать трансляцию</button>
+    </form>
+    <form th:if="${streamInfo.isLive}" th:action="@{/stream/stop}" method="post" style="display: inline;">
+      <button type="submit" class="btn btn-danger">Остановить трансляцию</button>
+    </form>
+    <button class="btn btn-secondary">Настройки</button>
+  </div>
+</header>
+
+<div class="container">
+  <section class="video-section">
+    <div class="video-container">
+      <div class="video-box">
+        <div class="video-header">
+          <div class="video-title" th:text="${streamInfo.camera1Name}">Камера 1</div>
+          <div class="video-status" th:if="${streamInfo.isLive}">
+            <span class="live-indicator"></span>LIVE
+          </div>
+        </div>
+        <div class="video-placeholder">
+          <div th:if="${streamInfo.isLive}">Видео с камеры 1 (LIVE)</div>
+          <div th:unless="${streamInfo.isLive}">Трансляция остановлена</div>
+        </div>
+        <div class="video-controls">
+          <button>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M6 3.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-9z"/>
+              <path d="M4.5 2A1.5 1.5 0 0 0 3 3.5v9A1.5 1.5 0 0 0 4.5 14h7a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 11.5 2h-7z"/>
+            </svg>
+            Пауза
+          </button>
+          <button>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-.708.707A7.476 7.476 0 0 1 13.025 8c0 2.071-.84 3.946-2.197 5.303l.708.707z"/>
+              <path d="M10.121 12.596A6.48 6.48 0 0 0 12.025 8a6.48 6.48 0 0 0-1.904-4.596l-.707.707A5.483 5.483 0 0 1 11.025 8a5.483 5.483 0 0 1-1.61 3.89l.706.706z"/>
+              <path d="M8.707 11.182A4.486 4.486 0 0 0 10.025 8a4.486 4.486 0 0 0-1.318-3.182L8 5.525A3.489 3.489 0 0 1 9.025 8 3.49 3.49 0 0 1 8 10.475l.707.707zM6.717 3.55A.5.5 0 0 1 7.43 4.418l-3.905 3.905a.5.5 0 0 1-.708 0l-2.02-2.02a.5.5 0 0 1 .708-.707l1.667 1.666L6.717 3.55z"/>
+            </svg>
+            Звук
+          </button>
+          <button>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm6 0a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H6z"/>
+            </svg>
+            Запись
+          </button>
+        </div>
+      </div>
+
+      <div class="video-box">
+        <div class="video-header">
+          <div class="video-title" th:text="${streamInfo.camera2Name}">Камера 2</div>
+          <div class="video-status" th:if="${streamInfo.isLive}">
+            <span class="live-indicator"></span>LIVE
+          </div>
+        </div>
+        <div class="video-placeholder">
+          <div th:if="${streamInfo.isLive}">Видео с камеры 2 (LIVE)</div>
+          <div th:unless="${streamInfo.isLive}">Трансляция остановлена</div>
+        </div>
+        <div class="video-controls">
+          <button>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M6 3.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-9z"/>
+              <path d="M4.5 2A1.5 1.5 0 0 0 3 3.5v9A1.5 1.5 0 0 0 4.5 14h7a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 11.5 2h-7z"/>
+            </svg>
+            Пауза
+          </button>
+          <button>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-.708.707A7.476 7.476 0 0 1 13.025 8c0 2.071-.84 3.946-2.197 5.303l.708.707z"/>
+              <path d="M10.121 12.596A6.48 6.48 0 0 0 12.025 8a6.48 6.48 0 0 0-1.904-4.596l-.707.707A5.483 5.483 0 0 1 11.025 8a5.483 5.483 0 0 1-1.61 3.89l.706.706z"/>
+              <path d="M8.707 11.182A4.486 4.486 0 0 0 10.025 8a4.486 4.486 0 0 0-1.318-3.182L8 5.525A3.489 3.489 0 0 1 9.025 8 3.49 3.49 0 0 1 8 10.475l.707.707zM6.717 3.55A.5.5 0 0 1 7.43 4.418l-3.905 3.905a.5.5 0 0 1-.708 0l-2.02-2.02a.5.5 0 0 1 .708-.707l1.667 1.666L6.717 3.55z"/>
+            </svg>
+            Звук
+          </button>
+          <button>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm6 0a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H6z"/>
+            </svg>
+            Запись
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chat-section">
+    <div class="chat-header">
+      <span>Чат трансляции</span>
+      <span th:text="|${streamInfo.viewerCount} участников|">24 участника</span>
+    </div>
+    <div class="chat-container" id="chatContainer">
+      <!-- Сообщения чата -->
+      <div th:each="message : ${chatMessages}"
+           th:class="${message.outgoing} ? 'message message-outgoing' : 'message message-incoming'">
+        <div class="message-header">
+          <span class="message-sender" th:text="${message.sender}">Пользователь</span>
+          <span class="message-time" th:text="${message.formattedTime}">14:23</span>
+        </div>
+        <div class="message-text" th:text="${message.text}">Текст сообщения</div>
+      </div>
+    </div>
+    <div class="chat-input">
+      <form th:action="@{/stream/send-message}" method="post" style="display: flex; width: 100%; gap: 10px;">
+        <input type="text" name="messageText" placeholder="Введите сообщение..." required>
+        <input type="hidden" name="sender" value="Вы">
+        <button type="submit">Отправить</button>
+      </form>
+    </div>
+  </section>
+</div>
+
+<footer class="footer">
+  <div>VideoStream Pro &copy; 2023 |
+    Статус:
+    <span th:if="${streamInfo.isLive}" class="status-live">Трансляция активна</span>
+    <span th:unless="${streamInfo.isLive}" class="status-offline">Трансляция остановлена</span> |
+    Зрителей: <span th:text="${streamInfo.viewerCount}">24</span>
+  </div>
+</footer>
+
+<script>
+  // Автопрокрутка чата к последнему сообщению
+  document.addEventListener('DOMContentLoaded', function() {
+    const chatContainer = document.getElementById('chatContainer');
+    if (chatContainer) {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+  });
+
+  // Обновление страницы каждые 30 секунд для получения новых сообщений
+  setInterval(function() {
+    window.location.reload();
+  }, 30000);
+</script>
+</body>
+</html>
+
+npm i bootstrap@5.3.8

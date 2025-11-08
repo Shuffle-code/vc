@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/html" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактор</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<div th:replace="~{common/navbar :: navi(ObserverForm)}"></div>
+<div class="container" style="background-color: rgba(0, 0, 0, 0.1); width: 70%;">
+    <br>
+    <form class="row g-3 needs-validation" th:object="${observer}" th:action="@{/observer/add}" method="post"
+          enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}">
+        <div class="form-outline">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="lastname">Фамилия</span>
+                <input type="text" class="form-control" aria-label="Sizing example input" placeholder="обязательно для заполнения"
+                       aria-describedby="inputGroup-sizing-default" th:field="*{lastname}">
+            </div>
+        </div>
+        <div class="form-outline">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="firstname">Имя</span>
+                <input type="text" class="form-control" aria-label="Sizing example input" placeholder="обязательно для заполнения"
+                       aria-describedby="inputGroup-sizing-default" th:field="*{firstname}">
+            </div>
+        </div>
+        <div class="form-outline">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="patronymic">Отчество</span>
+                <input type="text" class="form-control" aria-label="Sizing example input"
+                       aria-describedby="inputGroup-sizing-default" th:field="*{patronymic}">
+            </div>
+        </div>
+        <div class="form-outline">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="yearOfBirth">Год рождения</span>
+                <input type="text" class="form-control" aria-label="Sizing example input"
+                       aria-describedby="inputGroup-sizing-default" th:field="*{yearOfBirth}">
+            </div>
+        </div>
+        <div sec:authorize="hasAuthority('observer.create')" class="form-outline">
+            <div class="input-group mb-3">
+            <span class="input-group-text" id="status">Статус</span>
+            <select class="form-select" aria-label="Default select example" th:field="*{status}">
+                <option th:each="statusValue : ${T(tt.chat.vc.entity.enums.Status).values()}"
+                        th:value="${statusValue.name()}"
+                        th:text="${statusValue.title}"></option>
+            </select>
+            </div>
+        </div>
+
+        <div class="form-outline">
+        <div class="input-group mb-3">
+            <input type="hidden" th:field="${observer.id}">
+            <input type="file" name="files" multiple class="form-control" id="inputGroupFile02">
+            <label class="input-group-text" for="inputGroupFile02">Загрузка изображений</label>
+        </div>
+        </div>
+        <div class="col-12">
+            <button class="btn btn-primary" type="submit">Сохранить</button>
+            <button type="button" class="btn btn-outline-danger btn-rounded" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Удаление изображений
+            </button>
+        </div>
+        <div sec:authorize="!isAnonymous()">
+            <input type="hidden" th:field="*{status}">
+        </div>
+    </form>
+    <!-- Модальное окно -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Удаление изображений</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-hover" id="datatable">
+                        <tbody data-mdb-spy="scroll">
+                        <tr th:each="imageId, i : ${observerImagesId}">
+                            <td th:text="${i.count}" width="80px"></td>
+                            <td>
+                                <div>
+                                    <img th:src="@{'/observer/images/' + ${imageId}}" alt="" width="45px" height="45" class="rounded-circle"/>
+                                </div>
+                            </td>
+                            <td sec:authorize="!isAnonymous()">
+                                <a type="button"  th:href="@{${'/observer/image_delete/' + imageId}}" class="btn btn-outline-danger btn-rounded">Удалить</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <foot>
+        <br>
+        <br>
+        <br>
+    </foot>
+</div>
+<div th:replace="~{common/footer :: footerBlock}"/>
+</body>
+</html>
