@@ -31,7 +31,7 @@ public class ObserverController {
     private final ObserverService observerService;
     private final ObserverDao observerDao;
     private final ObserverImageService observerImageService;
-
+//    @ResponseBody
     @GetMapping("/all")
     public String getObserverList(Model model, HttpSession httpSession){
         httpSession.setAttribute("count", observerService.count().toString());
@@ -71,6 +71,7 @@ public class ObserverController {
     }
 
     @PostMapping("/add")
+//    @ResponseBody
     @PreAuthorize("hasAnyAuthority('observer.create', 'observer.update', 'observer.read')")
     public String saveObserver(@Valid Observer observer, @RequestParam("files") MultipartFile[] files,
                               BindingResult bindingResult) {
@@ -82,6 +83,7 @@ public class ObserverController {
                return "redirect:/observer/all";
     }
     @GetMapping("/delete/{id}")
+    @ResponseBody
     @PreAuthorize("hasAnyAuthority('observer.delete')")
     public String deleteById(@PathVariable(name = "id") Long id) {
         observerService.deleteById(id);
@@ -89,6 +91,7 @@ public class ObserverController {
     }
 
     @GetMapping("/status_delete/{id}")
+
     @PreAuthorize("hasAnyAuthority('observer.delete')")
     public String statusDeleteById(@PathVariable(name = "id") Long id) {
         observerService.statusDelete(id);

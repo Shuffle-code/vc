@@ -128,7 +128,18 @@ public class JpaUserDetailService implements UserDetailsService, UserService {
         return modelMapper.map(accountUserDao.save(user), UserDto.class);
 
     }
-
+    @Override
+    public void disconnect(AccountUser accountUser){
+        var userDaoByUsername = accountUserDao.findByUsername(accountUser.getUsername());
+        if (accountUser != null && accountUser.getStatus() != AccountStatus.ONLINE){
+            accountUser.setStatus(AccountStatus.OFFLINE);
+            accountUserDao.save(accountUser);
+        }
+    };
+    @Override
+    public List<AccountUser>findAllByStatus(AccountStatus accountStatus){
+        return accountUserDao.findAllByStatus(AccountStatus.ONLINE);
+    }
     @Override
     public AccountUser findByUsername(String username) {
         return accountUserDao.findByUsername(username).orElseThrow(

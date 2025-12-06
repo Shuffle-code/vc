@@ -43,7 +43,7 @@
                         <div class="card-body p-0 video-container overflow-hidden">
                             <div class="d-flex justify-content-center align-items-center bg-dark text-white" style="height: 432px;">
                                 <div>
-                                    <iframe width="576" height="432" src="https://rtsp.me/embed/6zFD98T4/"></iframe>
+                                    <iframe width="576" height="432" src="http://localhost:1984/stream.html?src=cam1"></iframe>
                                 </div>
                             </div>
                         </div>
@@ -64,7 +64,7 @@
                             <div class="d-flex justify-content-center align-items-center bg-dark text-white"
                                  style="height: 432px;">
                                 <div>
-                                    <iframe width="576" height="432"src="https://rtsp.me/embed/rtyiAy49/" ></iframe>
+                                    <iframe width="576" height="432"src="http://localhost:1984/stream.html?src=cam2&mode=webrtc" ></iframe>
                                 </div>
                             </div>
                         </div>
@@ -105,7 +105,9 @@
                                 <div class="col-12">
                                     <div class="d-flex gap-2">
                                         <button class="btn btn-primary">
-                                            <i class="bi bi-play-circle me-1"></i>Начать трансляцию
+                                            <a class="btn btn-primary" th:href="@{/observer/all}">
+                                                <i class="bi bi-play-circle me-1"></i>Участники
+                                            </a>
                                         </button>
                                         <button class="btn btn-outline-secondary">
                                             <i class="bi bi-arrow-repeat me-1"></i>Перезапустить камеры
@@ -139,36 +141,7 @@
                padding: 1rem;
                background-color: #f8f9fa;
                " id="chatMessages ">
-                        <!-- Системное сообщение -->
-                        <!--            <div class="message system-message">-->
-                        <!--              <small>Трансляция началась. Приятного просмотра!</small>-->
-                        <!--            </div>-->
 
-
-                        <!--            &lt;!&ndash; Пример входящего сообщения &ndash;&gt;-->
-                        <!--            <div class="message incoming">-->
-                        <!--              <div class="fw-bold">Алексей Петров</div>-->
-                        <!--              <div>Отличное качество видео! Какая используется камера?</div>-->
-                        <!--              <small class="text-muted">14:25</small>-->
-                        <!--            </div>-->
-
-                        <!--            &lt;!&ndash; Пример исходящего сообщения &ndash;&gt;-->
-                        <!--            <div class="message outgoing">-->
-                        <!--              <div>Спасибо! Используем Sony A7III для основной камеры</div>-->
-                        <!--              <small>14:26</small>-->
-                        <!--            </div>-->
-
-                        <!--            &lt;!&ndash; Thymeleaf цикл для динамических сообщений &ndash;&gt;-->
-                        <!--            <div th:each="message : ${chatMessages}"-->
-                        <!--                 th:classappend="${message.type == 'SYSTEM'} ? 'system-message' :-->
-                        <!--                                                ${message.outgoing} ? 'outgoing message' : 'incoming message'"-->
-                        <!--                 class="message">-->
-                        <!--              <div th:if="${message.type != 'SYSTEM' and !message.outgoing}"-->
-                        <!--                   class="fw-bold" th:text="${message.senderName}">Имя отправителя</div>-->
-                        <!--              <div th:text="${message.content}">Текст сообщения</div>-->
-                        <!--              <small th:classappend="${message.type != 'SYSTEM' and message.outgoing} ? '' : 'text-muted'"-->
-                        <!--                     th:text="${message.timestamp}">14:30</small>-->
-                        <!--            </div>-->
                     </div>
 
                     <!-- Панель ввода сообщения -->
@@ -185,54 +158,18 @@
                                 <i class="bi bi-send-fill"></i>
                             </button>
                         </form>
-                        <!--            <div class="mt-2 d-flex justify-content-between">-->
-                        <!--              <small class="text-muted">Сообщения видны всем участникам трансляции</small>-->
-                        <!--              <button class="btn btn-sm btn-outline-secondary">-->
-                        <!--                <i class="bi bi-emoji-smile"></i>-->
-                        <!--              </button>-->
-                        <!--            </div>-->
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!--  &lt;!&ndash; Статус бар &ndash;&gt;-->
-    <!--  <div class="row mt-3">-->
-    <!--    <div class="col">-->
-    <!--      <div class="card">-->
-    <!--        <div class="card-body py-2">-->
-    <!--          <div class="d-flex justify-content-between align-items-center">-->
-    <!--            <div class="d-flex gap-4">-->
-    <!--              <div>-->
-    <!--                <i class="bi bi-camera-video text-success me-1"></i>-->
-    <!--                <small>Камера 1: <span class="fw-bold">Активна</span></small>-->
-    <!--              </div>-->
-    <!--              <div>-->
-    <!--                <i class="bi bi-camera-video text-success me-1"></i>-->
-    <!--                <small>Камера 2: <span class="fw-bold">Активна</span></small>-->
-    <!--              </div>-->
-    <!--              <div>-->
-    <!--                <i class="bi bi-record-circle text-danger me-1"></i>-->
-    <!--                <small>Запись: <span class="fw-bold">В процессе</span></small>-->
-    <!--              </div>-->
-    <!--            </div>-->
-    <!--            <div>-->
-    <!--              <small class="text-muted" th:text="${'Обновлено: ' + #temporals.format(#temporals.createNow(), 'HH:mm:ss')}">-->
-    <!--                Обновлено: 14:30:45-->
-    <!--              </small>-->
-    <!--            </div>-->
-    <!--          </div>-->
-    <!--        </div>-->
-    <!--      </div>-->
-    <!--    </div>-->
-    <!--  </div>-->
 </div>
 <div th:replace="~{common/footer :: footerBlock}"/>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js" integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
     // Автопрокрутка чата к новым сообщениям
     document.addEventListener('DOMContentLoaded', function() {

@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import tt.chat.vc.entity.security.AccountUser;
 import tt.chat.vc.entity.security.ConfirmationCode;
 import tt.chat.vc.service.EmailService;

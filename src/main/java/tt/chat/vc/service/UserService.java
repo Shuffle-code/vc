@@ -2,6 +2,7 @@ package tt.chat.vc.service;
 
 import tt.chat.vc.dto.UserDto;
 import tt.chat.vc.entity.security.AccountUser;
+import tt.chat.vc.entity.security.enums.AccountStatus;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,4 +19,8 @@ public interface UserService {
     String getConfirmationCode();
     void deleteById(Long id);
     void generateConfirmationCode(UserDto thisUser, String confirmationCode);
+    void disconnect(AccountUser accountUser);
+    List<AccountUser> findAllByStatus(AccountStatus accountStatus);
+
+
 }

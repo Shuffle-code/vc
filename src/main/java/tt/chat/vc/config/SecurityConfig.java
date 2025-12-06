@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 import java.io.IOException;
 //import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -31,54 +32,45 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                        // Разрешаем доступ к статическим ресурсам и публичным endpoint'ам
-                        .requestMatchers("/auth/registration/", "/observer/image/**", "/auth/register", "/swagger-ui.html/**", "/auth/confirmation").permitAll()
-//                        .requestMatchers("/observer/images/*", "/login", "/auth/register", "/auth/invalid-confirmation").permitAll()
+                        .requestMatchers("/auth/registration/", "/observer/image/**", "/auth/register","/video",
+                                "/swagger-ui.html/**", "/auth/confirmation").permitAll()
+                        .requestMatchers("/observer/images/*", "/login","auth/login", "/auth/register", "/auth/invalid-confirmation").permitAll()
+                        .anyRequest().authenticated()
 
-                        // Защищенные маршруты
-//                        .requestMatchers("/admin/**").hasRole("ADMIN")
-//                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
-//                        .requestMatchers("/auth/logout/", "/user").authenticated()
-                        .anyRequest().permitAll()
-                // Все остальные запросы требуют аутентификации
-//                        .anyRequest().authenticated()
         );
         http.formLogin(form -> form
                                 .loginPage("/auth/login")
-//                        .loginProcessingUrl("/api/auth/login").loginProcessingUrl("/auth/login")
-//                        .successHandler(customAuthenticationSuccessHandler)
+                                .loginProcessingUrl("/auth/login")
                                 .defaultSuccessUrl("/video", true)
                                 .successHandler(customAuthenticationSuccessHandler)
-//                        .failureUrl("/login?error=true")
                                 .permitAll()
                 )
                 .logout(logout -> logout
-//                        .logoutUrl("/api/auth/logout")
                                 .logoutSuccessUrl("/video")
                                 .deleteCookies("JSESSIONID")
                                 .permitAll()
                 )
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/auth/login"))
+                        .accessDeniedPage("/error/access-denied")
+                )
                 .httpBasic(Customizer.withDefaults())
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/api/public/**")
-                );
-
-
+                        .ignoringRequestMatchers("/api/public/**"));
         return http.build();
     }
 
-    @Bean
-    public AccessDeniedHandler accessDeniedHandler() {
-        return new AccessDeniedHandler() {
-            @Override
-            public void handle(HttpServletRequest request, HttpServletResponse response,
-                               AccessDeniedException accessDeniedException) throws IOException {
-                // Ваша кастомная логика
-                response.sendRedirect("/error/access-denied");
-
-            }
-        };
-    }
+//    @Bean
+//    public AccessDeniedHandler accessDeniedHandler() {
+//        return new AccessDeniedHandler() {
+//            @Override
+//            public void handle(HttpServletRequest request, HttpServletResponse response,
+//                               AccessDeniedException accessDeniedException) throws IOException {
+//                response.sendRedirect("/error/access-denied");
+//
+//            }
+//        };
+//    }
 
 }
 //        http.authorizeHttpRequests(HttpSecurity.RequestMatcherConfigurer(filterChain()))
@@ -119,7 +111,7 @@ public class SecurityConfig {
 //        http.httpBasic(Customizer.withDefaults());
 //        return http.build();
 //    }
-
+//
 
 
 //}

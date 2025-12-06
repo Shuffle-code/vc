@@ -17,20 +17,17 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark" th:fragment="navi(activeTab)">
-<!--    <div class="d-flex p-2">-->
     <a class="navbar-brand" th:href="@{/video}">_VideoStream TT Nsk_</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="container-fluid">
-
         <div class="collapse navbar-collapse" id="navbarNav">
-
-<!--                <li class="nav-item">-->
-<!--                    <a class="nav-link" th:classappend="${activeTab == 'ObserverList' ? 'active' : ''}" aria-current="page" th:href="@{/observer/all}"-->
-<!--                       th:text="'Дворники(' + ${session.count == null ? '0)' : session.count + ')'}"></a>-->
-<!--                </li>-->
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activeTab == 'ObserverList' ? 'active' : ''}" aria-current="page" th:href="@{/observer/all}"
+                       th:text="'Дворники(' + ${session.count == null ? '0)' : session.count + ')'}"></a>
+                </li>
 <!--                <li sec:authorize="hasAuthority('observer.create')" class="nav-item">-->
 <!--                    <a class="nav-link" th:classappend="${activeTab == 'ObserverForm' ? 'active' : ''}" aria-current="page" th:href="@{/observer}">Добавить дворника</a>-->
 <!--                </li>-->
@@ -79,12 +76,12 @@
             </li>
             <div class="d-grid gap-2 d-md-flex justify-content-md-end" >
                 <li sec:authorize="isAuthenticated()" class="nav-item">
-                    <a type="button" class="btn btn-outline-warning btn-rounded" th:href="@{/video}" >Начать трансляцию</a>
+                    <a type="button" class="btn btn-outline-warning btn-rounded" th:href="@{/video}">Начать трансляцию</a>
                 </li>
-<!--                            <li sec:authorize="hasAuthority('observer.read')" class="nav-item">-->
-                <li sec:authorize="isAuthenticated()" class="nav-item">
-                    <a type="button" class="btn btn-outline-secondary btn-rounded"  th:href="@{/tour/noParticipate}">Остановить трансляцию</a>
-                </li>
+<!--&lt;!&ndash;                            <li sec:authorize="hasAuthority('observer.read')" class="nav-item">&ndash;&gt;-->
+<!--                <li sec:authorize="isAuthenticated()" class="nav-item">-->
+<!--                    <a type="button" class="btn btn-outline-secondary btn-rounded"  th:href="@{/tour/noParticipate}">Остановить трансляцию</a>-->
+<!--                </li>-->
                 <li sec:authorize="isAnonymous()" class="nav-item">
                     <a type="button" th:href="@{/auth/login}" class="btn btn-success">Войти</a>
                 </li>

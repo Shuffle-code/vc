@@ -6,6 +6,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum Status {
-    ACTIVE("Оплачено"), DISABLE("Дисквалификация"), NOT_ACTIVE("Не оплачено"), DELETED("Черный список");
+    ACTIVE("ACTIVE"), DISABLE("Дисквалификация"), NOT_ACTIVE("NOT_ACTIVE"), DELETED("Черный список");
     private final String title;
 }

@@ -5,8 +5,6 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-<!--    <include-->
-<!--            file="db/changelog/createTables/create-table-account_role.sql"/>-->
     <include
             file="/db/changelog/createTables/create-table-account.xml" />
     <include
@@ -25,8 +23,14 @@
             file="/db/changelog/createTables/create-table-user_role.xml"/>
     <include
             file="/db/changelog/createTables/create-table-observer_image.xml"/>
+    <include
+            file="/db/changelog/createTables/create-table-chat_message.xml"/>
+    <include
+            file="/db/changelog/createTables/create-table-massage.xml"/>
+    <include
+            file="/db/changelog/createTables/create-table-chat_room.xml"/>
 
-    <!-- =====> изменение таблиц <===== -->
+<!--     =====> изменение таблиц <===== -->
     <include
             file="/db/changelog/modifyTable/modify-table-user-change.xml"/>
     <include

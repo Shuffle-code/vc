@@ -1,7 +1,7 @@
 //import org.springframework.stereotype.Controller;
 //import org.springframework.ui.Model;
 //import org.springframework.web.bind.annotation.GetMapping;
-
+//
 //package tt.chat.vc.controller;
 //
 //import com.example.streamapp.model.ChatMessage;
@@ -68,8 +68,8 @@
 //        return "redirect:/stream";
 //    }
 //}
-
-
+//
+//
 //@Controller
 //public class CameraController {
 //    @GetMapping("/camera")

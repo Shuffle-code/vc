@@ -18,5 +18,5 @@ CREATE TABLE IF NOT EXISTS account_user (
                                 CREATED_BY varchar(255) DEFAULT NULL,
                                 CREATED_DATE timestamp NULL DEFAULT NULL,
                                 LAST_MODIFIED_BY varchar(255) DEFAULT NULL,
-                                LAST_MODIFIED_DATE timestamp NULL DEFAULT NULL
+                                LAST_MODIFIED_DATE timestamp DEFAULT NULL
 );
