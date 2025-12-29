@@ -19,7 +19,8 @@
         <a class="text-white" href="https://www.tt-nsk.ru/">tt-nsk.ru</a>
 <!--        <span th:if="${streamInfo.isLive}" class="status-live">Трансляция активна</span>-->
 <!--        <span th:unless="${streamInfo.isLive}" class="status-offline">Трансляция остановлена</span>-->
-<!--        Зрителей: <span th:text="${streamInfo.viewerCount}">24</span>-->
+        <span th:text="${session.countObservers == null  ? '' : (session.countObservers == 0 ? '' : ' Зрителей: ' + session.countObservers)}"></span>
+<!--        session.countObservers == null ? 'Условия трансляции' : (session.countObservers == 0 ? 'Условия трансляции' : session.dateUpcomingTour + '(' + session.countObservers + ')')}">-->
     </div>
 </footer>
 

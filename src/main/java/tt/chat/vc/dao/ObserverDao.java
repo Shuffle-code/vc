@@ -16,16 +16,10 @@ public interface ObserverDao extends JpaRepository<Observer, Long> {
     List<Observer> findAllByStatus(Status status, Sort sort);
     @Query(value = "SELECT MAX(id) FROM observer ", nativeQuery = true)
     Long maxId();
-
-//    @Query(value = "SELECT ID_TTWR FROM nsk_tt.player where ID_TTWR != 'null' & ID_TTWR != ''", nativeQuery = true)
-//    List<String> getIdTtw();
-
-    @Query(value = "SELECT ID FROM nsk_tt.player where ID_TTWR = :idTtw", nativeQuery = true)
+    @Query(value = "SELECT ID FROM ttvc.account_user where ID_TTWR = :idTtw", nativeQuery = true)
     Long getObserverIdByIdTtw(String idTtw);
-    @Query(value = "SELECT ID_TTWR FROM nsk_tt.player where ID_TTWR != 'null' & ID_TTWR != ''", nativeQuery = true)
+    @Query(value = "SELECT ID_TTWR FROM ttvc.account_user where ID_TTWR != 'null' & ID_TTWR != ''", nativeQuery = true)
     List<String> getIdTtw();
-
+//    List<Observer> findAllById (List<Long> ids, Sort sort);
     Optional<Observer> findByLastname(String title);
-//    @Query(value = "SELECT ID FROM nsk_tt.player where ID_TTWR = :idTtw", nativeQuery = true)
-//    Long getObserverIdByIdTtw(String idTtw);
 }

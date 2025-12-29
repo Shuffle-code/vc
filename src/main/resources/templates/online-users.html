@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Онлайн пользователи</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+  <style>
+    .user-card { transition: all 0.3s; }
+    .user-card:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    .online-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .online { background: #28a745; animation: pulse 2s infinite; }
+    .idle { background: #ffc107; }
+    .browser-icon { font-size: 1.2rem; margin-right: 5px; }
+    .ip-address { font-family: 'Courier New', monospace; font-size: 0.9rem; }
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+<div class="container-fluid mt-4">
+  <div class="row mb-4">
+    <div class="col">
+      <h1><i class="bi bi-people-fill"></i> Онлайн пользователи</h1>
+      <p class="text-muted">Обновлено: <span th:text="${currentTime}"></span></p>
+    </div>
+  </div>
+
+  <!-- Статистика -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card bg-primary text-white">
+        <div class="card-body">
+          <h5><i class="bi bi-person-fill"></i> Всего онлайн</h5>
+          <h2 th:text="${totalUsers}">0</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-success text-white">
+        <div class="card-body">
+          <h5><i class="bi bi-person-check-fill"></i> Авторизовано</h5>
+          <h2 th:text="${authenticatedUsers}">0</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-info text-white">
+        <div class="card-body">
+          <h5><i class="bi bi-person-dash-fill"></i> Анонимных</h5>
+          <h2 th:text="${anonymousUsers}">0</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-warning text-dark">
+        <div class="card-body">
+          <h5><i class="bi bi-globe"></i> Уникальных IP</h5>
+          <h2 th:text="${#maps.size(usersByIp)}">0</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Список пользователей -->
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bi bi-list-ul"></i> Активные сессии</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th>Статус</th>
+                <th>Пользователь</th>
+                <th>IP адрес</th>
+                <th>Браузер</th>
+                <th>Текущая страница</th>
+                <th>Последняя активность</th>
+                <th>Время на сайте</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:each="user : ${users}" class="user-card">
+                <td>
+                  <div class="online-dot online"></div>
+                </td>
+                <td>
+                  <div th:if="${user.authenticated}">
+                    <i class="bi bi-person-badge-fill text-success"></i>
+                    <strong th:text="${user.username}">User</strong>
+                  </div>
+                  <div th:unless="${user.authenticated}">
+                    <i class="bi bi-person text-muted"></i>
+                    <span class="text-muted">Гость</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="ip-address" th:text="${user.ipAddress}"></span>
+                </td>
+                <td>
+                  <i th:if="${#strings.contains(user.userAgent, 'Chrome')}"
+                     class="bi bi-browser-chrome browser-icon text-success"></i>
+                  <i th:if="${#strings.contains(user.userAgent, 'Firefox')}"
+                     class="bi bi-browser-firefox browser-icon text-orange"></i>
+                  <i th:if="${#strings.contains(user.userAgent, 'Safari')}"
+                     class="bi bi-browser-safari browser-icon text-primary"></i>
+                  <span th:text="${#strings.substring(user.userAgent, 0, 30)} + '...'"></span>
+                </td>
+                <td>
+                  <a th:href="@{${user.currentPage}}"
+                     th:text="${#strings.substring(user.currentPage, 0, 30)}"
+                     target="_blank"></a>
+                </td>
+                <td th:text="${formatter.format(user.lastActivity)}"></td>
+                <td th:text="${#dates.format(#dates.createNow().time - user.firstSeen.toEpochSecond(java.time.ZoneOffset.UTC)*1000, 'mm мин')}">
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Статистика по браузерам и страницам -->
+    <div class="col-md-4">
+      <!-- Браузеры -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bi bi-pie-chart-fill"></i> Браузеры</h5>
+        </div>
+        <div class="card-body">
+          <div th:each="entry : ${browserStats}">
+            <div class="d-flex justify-content-between mb-2">
+              <span th:text="${entry.key}">Browser</span>
+              <span th:text="${entry.value}">0</span>
+            </div>
+            <div class="progress mb-3" style="height: 8px;">
+              <div class="progress-bar"
+                   th:style="'width: ' + ${entry.value/totalUsers*100} + '%;'"
+                   th:classappend="${entry.key == 'Chrome'} ? 'bg-success' :
+                                                     ${entry.key == 'Firefox'} ? 'bg-warning' :
+                                                     ${entry.key == 'Safari'} ? 'bg-primary' : 'bg-secondary'">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Популярные страницы -->
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bi bi-bar-chart-fill"></i> Популярные страницы</h5>
+        </div>
+        <div class="card-body">
+          <div th:each="entry : ${pageVisits}">
+            <div class="d-flex justify-content-between mb-2">
+              <a th:href="@{${entry.key}}"
+                 th:text="${#strings.substring(entry.key, 0, 25)}"
+                 target="_blank"
+                 style="font-size: 0.9rem;"></a>
+              <span class="badge bg-primary" th:text="${entry.value}">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auto-refresh script -->
+  <script>
+    // Автоматическое обновление каждые 30 секунд
+    setTimeout(function() {
+      window.location.reload();
+    }, 30000);
+
+    // Кнопка ручного обновления
+    document.getElementById('refreshBtn')?.addEventListener('click', function() {
+      window.location.reload();
+    });
+  </script>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

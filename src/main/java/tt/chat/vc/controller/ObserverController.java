@@ -12,7 +12,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tt.chat.vc.dao.ObserverDao;
+import tt.chat.vc.dao.security.AccountUserDao;
 import tt.chat.vc.entity.Observer;
+import tt.chat.vc.entity.security.AccountUser;
 import tt.chat.vc.service.ObserverImageService;
 import tt.chat.vc.service.ObserverService;
 
@@ -30,13 +32,14 @@ import java.util.stream.Collectors;
 public class ObserverController {
     private final ObserverService observerService;
     private final ObserverDao observerDao;
+    private final AccountUserDao accountUserDao;
     private final ObserverImageService observerImageService;
 //    @ResponseBody
     @GetMapping("/all")
     public String getObserverList(Model model, HttpSession httpSession){
-        httpSession.setAttribute("count", observerService.count().toString());
+        httpSession.setAttribute("countObservers", observerService.countObservers().toString());
 //        httpSession.setAttribute("countPlaying", observerService.countPlaying());
-        model.addAttribute("observers", observerService.addListForMainPage());
+        model.addAttribute("observers", observerService.findAllEnabledUsers(accountUserDao.getAllByEnabled()));
         return "observer/observer-list";
     }
 
@@ -94,7 +97,8 @@ public class ObserverController {
 
     @PreAuthorize("hasAnyAuthority('observer.delete')")
     public String statusDeleteById(@PathVariable(name = "id") Long id) {
-        observerService.statusDelete(id);
+//        observerService.statusDelete(id);
+        observerService.userStatusDelete(id);
 //        log.info("observer" + id);
         return "redirect:/observer/all";
     }

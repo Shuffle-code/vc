@@ -123,5 +123,59 @@ async function fetchAndDisplayConnectedUsers(){
 }
 
 function onError(){
-
+    connectingElement.textContent = 'Could not connect to WebSocket';
+    connectingElement.style.collor = 'red';
 }
+
+function sendMessage(event) {
+    const messageContent = messageInput.value.trim();
+    if(messageContent && stampClient) {
+        const chatMessage = {
+            senderID: username, recipientId: selectedUserId,
+            content: messageInput.value.trim(),
+            timeStamp: new Date()
+        };
+        stompClient.send('/app/chat', {}, JSON.stringify(chatMessage));
+        displayMessage(username, messageInput.value.trim());
+        messageInput.value = "";
+    }
+    chatArea.scrollTop = chatArea.scrollHeight;
+    event.preventDefault();
+}
+async function onMessageReceived(payload){
+    await findAndDisplayConnectedUsers();
+    console.log('Message received', payload);
+    const message = JSON.parse(payload.body);
+    if (selectedUserId && selectedUserId === message.senderID){
+        displayMessage(message.senderID, message.content);
+        chatArea.scrollTop = chatArea.scrollHeight;
+    }
+    if (selectedUserId){
+        document.querySelector('${selectedUserId}').classList.add('active');
+    } else {
+        messageForm.classList.add('hidden')
+    }
+    const notifiedUser = document.querySelector('${message.senderId}');
+    if (notifiedUser && !notifiedUser.classList.contains('active')){
+        const nbrMsg = notifiedUser.querySelector('.nbr-msg');
+        nbrMsg.classList.remove('hidden');
+        nbrMsg.textContent = '';
+    }
+}
+let hasLoggedOut = false;
+function onLogout(){
+    if (hasLoggedOut)return;
+    hasLoggedOut = true;
+    if (stompClient && stompClient.connected){
+        stompClient.send('/app/user.disconnectUser',{}, JSON.stringify({username: username, fullName: fullname, status: 'OFFLINE' }));
+    }
+    window.location.reload();
+}
+messageForm.addEventListener('submit', sendMessage, true);
+logout.addEventListener('click', onLogout, true);
+window.addEventListener('beforeunload', () => {
+    const isReload = window.performance.getEntriesByType('navigation')[0]?.type === 'reload';
+    if (!isReload){
+        onLogout();
+    }
+})

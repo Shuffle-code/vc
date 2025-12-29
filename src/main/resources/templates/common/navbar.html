@@ -24,10 +24,10 @@
     </button>
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarNav">
-                <li class="nav-item">
-                    <a class="nav-link" th:classappend="${activeTab == 'ObserverList' ? 'active' : ''}" aria-current="page" th:href="@{/observer/all}"
-                       th:text="'Дворники(' + ${session.count == null ? '0)' : session.count + ')'}"></a>
-                </li>
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link" th:classappend="${activeTab == 'ObserverList' ? 'active' : ''}" aria-current="page" th:href="@{/observer/all}"-->
+<!--                       th:text="'Дворники(' + ${session.count == null ? '0)' : session.count + ')'}"></a>-->
+<!--                </li>-->
 <!--                <li sec:authorize="hasAuthority('observer.create')" class="nav-item">-->
 <!--                    <a class="nav-link" th:classappend="${activeTab == 'ObserverForm' ? 'active' : ''}" aria-current="page" th:href="@{/observer}">Добавить дворника</a>-->
 <!--                </li>-->
@@ -53,24 +53,25 @@
 <!--                        </li>-->
 <!--                    </ul>-->
 <!--                </li>-->
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <!--            <li sec:authorize="hasAuthority('observer.participant')" class="nav-item">-->
+<!--                <div class="d-grid gap-2 d-md-flex justify-content-md-end">-->
+<!--                    &lt;!&ndash;            <li sec:authorize="hasAuthority('observer.participant')" class="nav-item">&ndash;&gt;-->
 
-                </div>
-            </ul>
+<!--                </div>-->
+<!--            </ul>-->
         </div>
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" th:href="@{/tour(id=${session.tourId})}" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:classappend="${activeTab == 'Participate' ? 'active' : ''}"
-                   th:text="${session.countPlaying == null ? 'Условия трансляции' : (session.countPlaying == 0 ? 'Условия трансляции' : session.dateUpcomingTour + '(' + session.countPlaying + ')')}">
+                   th:text="${session.countObservers != null ? 'Условия трансляции (' + session.countObservers + ')' : (session.countObservers != 0 ? 'Условия трансляции (' + session.countObservers + ')' : session.data + '(' + session.countObservers + ')')}">
+<!--                th:text="${session.countObservers == null ? 'Условия трансляции' : (session.countObservers == 0 ? 'Условия трансляции' : session.data + '(' + session.countObservers + ')')}">-->
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <li>
                         <a class="dropdown-item" th:classappend="${activeTab == 'Rules' ? 'active' : ''}" th:href="@{/video/rules}">Условия трансляции</a>
                     </li>
                     <li>
-                        <a class="dropdown-item" th:classappend="${activeTab == 'Participate' ? 'active' : ''}" th:href="@{/tour}"
-                           th:text="${session.countPlaying == 0 ? '' : 'WL⚡500-700(' + session.countPlaying + ')'}"></a>
+                        <a class="dropdown-item" th:classappend="${activeTab == 'Participate' ? 'active' : ''}" th:href="@{/video/rules}"
+                           th:text="${session.countObservers == 0 ? '' : session.data + '(' + session.countObservers + ')'}"></a>
                     </li>
                 </ul>
             </li>

@@ -28,13 +28,13 @@ public class SecurityConfig {
     @Autowired
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
-    //        private final JwtConfigurer jwtConfigurer;
+    //        private final JwtConfigurer jwtConfigurer; /auth/registration
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/registration/", "/observer/image/**", "/auth/register","/video",
-                                "/swagger-ui.html/**", "/auth/confirmation").permitAll()
-                        .requestMatchers("/observer/images/*", "/login","auth/login", "/auth/register", "/auth/invalid-confirmation").permitAll()
+                        .requestMatchers("/auth/registration","/auth/register","/observer/image/**","/video",
+                                "/swagger-ui.html/**", "/auth/confirmation", "/observer/images/*", "/login","auth/login",  "/auth/invalid-confirmation").permitAll()
+//                        .requestMatchers().permitAll()
                         .anyRequest().authenticated()
 
         );

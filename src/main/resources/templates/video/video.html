@@ -9,16 +9,16 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        .message {
-            padding: 0.5rem 0.75rem;
-            margin-bottom: 0.5rem;
-            border-radius: 8px;
-            max-width: 80%;
-        }
-        .incoming {
-            background-color: #e9ecef;
-            align-self: flex-start;
-        }
+        /*.message {*/
+        /*    padding: 0.5rem 0.75rem;*/
+        /*    margin-bottom: 0.5rem;*/
+        /*    border-radius: 8px;*/
+        /*    max-width: 80%;*/
+        /*}*/
+        /*.incoming {*/
+        /*    background-color: #e9ecef;*/
+        /*    align-self: flex-start;*/
+        /*}*/
 
     </style>
 </head>
@@ -129,8 +129,9 @@
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center py-2">
                     <span class="fw-bold">Чат трансляции</span>
-                    <span class="badge bg-primary" th:text="${'Участников: ' + (onlineUsers != null ? onlineUsers : '12')}">
-                            Участников: 12
+                    <span class="badge bg-primary" th:text="${'Участников: ' + (onlineCount != null ?  onlineCount : '121')}">
+<!--                            Участников: 12-->
+<!--                         th:text="${session.countPlaying == 0 ? '' : 'WL⚡500-700(' + session.countPlaying + ')'}"-->
                         </span>
                 </div>
                 <div class="card-body p-0 d-flex flex-column">

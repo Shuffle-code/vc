@@ -106,7 +106,7 @@ public class JpaUserDetailService implements UserDetailsService, UserService {
 
     public Observer addNewObserver(AccountUser accountUser){
         Observer observer = modelMapper.map(accountUser, Observer.class);
-        if (observerService.count() != 0){
+        if (observerService.countAll() != 0){
             observer.setId(observerService.maxId() + 1);
         }
         observer.setStatus(Status.NOT_ACTIVE);
@@ -130,7 +130,7 @@ public class JpaUserDetailService implements UserDetailsService, UserService {
     }
     @Override
     public void disconnect(AccountUser accountUser){
-        var userDaoByUsername = accountUserDao.findByUsername(accountUser.getUsername());
+//        var userDaoByUsername = accountUserDao.findByUsername(accountUser.getUsername());
         if (accountUser != null && accountUser.getStatus() != AccountStatus.ONLINE){
             accountUser.setStatus(AccountStatus.OFFLINE);
             accountUserDao.save(accountUser);
@@ -140,6 +140,7 @@ public class JpaUserDetailService implements UserDetailsService, UserService {
     public List<AccountUser>findAllByStatus(AccountStatus accountStatus){
         return accountUserDao.findAllByStatus(AccountStatus.ONLINE);
     }
+
     @Override
     public AccountUser findByUsername(String username) {
         return accountUserDao.findByUsername(username).orElseThrow(
