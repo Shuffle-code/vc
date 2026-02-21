@@ -55,6 +55,14 @@
             </div>
         </div>
 
+        <div sec:authorize="hasAuthority('observer.create')" class="form-outline">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="idTtwr">ID ttw</span>
+                <input type="text" class="form-control" aria-label="Sizing example input"
+                       aria-describedby="inputGroup-sizing-default" th:field="*{idTtwr}">
+            </div>
+        </div>
+
         <div class="form-outline">
         <div class="input-group mb-3">
             <input type="hidden" th:field="${observer.id}">

@@ -49,7 +49,7 @@ public class JpaUserDetailService implements UserDetailsService, UserService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info(username);
+        log.info(username + " name");
         return accountUserDao.findByUsername(username).orElseThrow(
                 () -> new UsernameNotFoundException("Username: " + username + " not found")
         );
@@ -78,7 +78,7 @@ public class JpaUserDetailService implements UserDetailsService, UserService {
         observerImageDao.save(observerImage);
         AccountRole roleUser = accountRoleDao.findByName("ROLE_USER");
         AccountRole roleAdmin = accountRoleDao.findByName("ROLE_ADMIN");
-        AccountRole rolePlayer = accountRoleDao.findByName("ROLE_PLAYER");
+        AccountRole roleObserver = accountRoleDao.findByName("ROLE_OBSERVER");
         long count = accountUserDao.count();
         if(count == 0){
             accountUser.setRoles(Set.of(roleAdmin));
@@ -150,7 +150,11 @@ public class JpaUserDetailService implements UserDetailsService, UserService {
     public AccountUser update(AccountUser accountUser) {
         if (accountUser.getId() != null) {
             accountUserDao.findById(accountUser.getId()).ifPresent(
-                    (user) -> accountUser.setVersion(user.getVersion())
+                    (user) ->
+                    {
+                        accountUser.setVersion(user.getVersion());
+//                        accountUser.setStatus(AccountStatus.ONLINE);
+                    }
             );
         }
         return accountUserDao.save(accountUser);

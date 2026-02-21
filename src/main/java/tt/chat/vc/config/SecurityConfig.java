@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.web.configurers.HttpBasicC
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 import java.io.IOException;
 //import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -27,7 +28,8 @@ import java.io.IOException;
 public class SecurityConfig {
     @Autowired
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
-
+    @Autowired
+    private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
     //        private final JwtConfigurer jwtConfigurer; /auth/registration
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -46,8 +48,9 @@ public class SecurityConfig {
                                 .permitAll()
                 )
                 .logout(logout -> logout
-                                .logoutSuccessUrl("/video")
                                 .deleteCookies("JSESSIONID")
+                                .logoutSuccessHandler(customLogoutSuccessHandler)
+                                .clearAuthentication(true)
                                 .permitAll()
                 )
                 .exceptionHandling(exceptions -> exceptions

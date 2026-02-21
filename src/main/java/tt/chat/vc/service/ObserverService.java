@@ -89,6 +89,10 @@ public class ObserverService {
     }
 
     public Observer updateRatingTtw(Observer observer, BigDecimal bigDecimal) {
+        return getObserver(observer, bigDecimal);
+    }
+
+    private Observer getObserver(Observer observer, BigDecimal bigDecimal) {
         Optional<Observer> observerFromDBOptional = observerDao.findById(observer.getId());
         if (observerFromDBOptional.isPresent()) {
             Observer observerFromDB = observerFromDBOptional.get();
@@ -98,6 +102,9 @@ public class ObserverService {
         return observerDao.save(observer);
     }
 
+    public Observer updateActivityTime(Observer observer, BigDecimal bigDecimal) {
+        return getObserver(observer, bigDecimal);
+    }
 
     @Transactional
     public Observer save(final Observer observer) {

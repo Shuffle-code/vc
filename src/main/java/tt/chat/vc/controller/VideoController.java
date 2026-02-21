@@ -9,9 +9,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import tt.chat.vc.entity.OnlineUser;
+import tt.chat.vc.entity.SessionListener;
 import tt.chat.vc.service.ObserverService;
-import tt.chat.vc.service.OnlineUsersService;
+//import tt.chat.vc.service.OnlineUsersService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -21,18 +23,18 @@ import java.time.format.DateTimeFormatter;
 @RequestMapping("/video")
 public class VideoController {
     private final ObserverService observerService;
-    @Autowired
-    private OnlineUsersService onlineUsersService;
+//    @Autowired
+//    private OnlineUsersService onlineUsersService;
     private static final DateTimeFormatter formatter =
             DateTimeFormatter.ofPattern("HH:mm:ss");
     private final LocalDate currentDate = LocalDate.now();
-//    private final ObserverService observerService;
     @GetMapping
     public String video(Model model, HttpSession httpSession) {
-        httpSession.setAttribute("countObservers", observerService.countObservers().toString());
+        httpSession.setAttribute("countObservers", SessionListener.getActiveSessions());
+//        httpSession.setAttribute("countObservers", observerService.countObservers().toString());
         httpSession.setAttribute("data", currentDate);
-        model.addAttribute("onlineCount",
-                observerService.countAll().toString());
+        model.addAttribute("onlineCount", SessionListener.getOnlineUsers().size());
+//                observerService.countAll().toString());
         return "video/video";
     }
     @GetMapping("/rules")
