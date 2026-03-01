@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS message (
-                             ID bigint NOT NULL PRIMARY KEY,
+                             ID BIGSERIAL PRIMARY KEY,
                              content varchar (1000) NULL,
                              timestamp timestamp null,
                              account_user_id bigint DEFAULT NULL,

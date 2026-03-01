@@ -24,9 +24,9 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
                                 HttpServletResponse response,
                                 Authentication authentication)
             throws IOException{
-        String username = authentication.getName();
-        SessionListener.deleteUser(SessionListener.findFirstSessionIdByUsername(username),username);
-        log.info(SessionListener.getOnlineUsers().toString());
+//        String username = authentication.getName();
+//        SessionListener.deleteUser(SessionListener.findFirstSessionIdByUsername(username),username);
+//        log.info(SessionListener.getOnlineUsers().toString()); // не работает при окончании сессии по времени
         if (!request.getHeader("referer").contains("logout")) {
             response.sendRedirect(request.getHeader("referer"));
         } else {

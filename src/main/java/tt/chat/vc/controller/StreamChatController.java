@@ -1,14 +1,11 @@
+//package tt.chat.vc.controller;
+//
 //import org.springframework.stereotype.Controller;
 //import org.springframework.ui.Model;
 //import org.springframework.web.bind.annotation.GetMapping;
-//
-//package tt.chat.vc.controller;
 //
 //import com.example.streamapp.model.ChatMessage;
 //import com.example.streamapp.model.StreamInfo;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.ui.Model;
-//import org.springframework.web.bind.annotation.GetMapping;
 //import org.springframework.web.bind.annotation.PostMapping;
 //import org.springframework.web.bind.annotation.RequestParam;
 //
@@ -16,7 +13,7 @@
 //import java.util.ArrayList;
 //import java.util.List;
 //@Controller
-//public class StreamController {
+//public class StreamChatController {
 //    private List<ChatMessage> chatMessages = new ArrayList<>();
 //    private StreamInfo streamInfo = new StreamInfo();
 //
@@ -70,14 +67,14 @@
 //}
 //
 //
-//@Controller
-//public class CameraController {
-//    @GetMapping("/camera")
-//    public String getCamera(Model model) {
-//        StreamInfo streamInfo = new StreamInfo();
-//        streamInfo.setLive(true); // или false
-//        model.addAttribute("streamInfo", streamInfo);
-//        model.addAttribute("streamUrl", "https://rtsp.ru/embed/HdaN53Fz/");
-//        return "camera";
-//    }
-//}
+////@Controller
+////public class CameraController {
+////    @GetMapping("/camera")
+////    public String getCamera(Model model) {
+////        StreamInfo streamInfo = new StreamInfo();
+////        streamInfo.setLive(true); // или false
+////        model.addAttribute("streamInfo", streamInfo);
+////        model.addAttribute("streamUrl", "https://rtsp.ru/embed/HdaN53Fz/");
+////        return "camera";
+////    }
+////}

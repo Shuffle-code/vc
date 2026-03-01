@@ -13,10 +13,10 @@ import java.util.Date;
 @Entity
 @Builder
 @Table(name ="chat_message")
-public class ChatMessage extends BaseEntity {
+public class StreamChatMessage extends BaseEntity {
     private String chatId;
+    private String streamId;
     private String senderId;
-    private String recipientId;
     private String content;
     private Date timeStamp;
 }

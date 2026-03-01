@@ -1,12 +1,15 @@
 package tt.chat.vc.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import tt.chat.vc.entity.common.BaseEntity;
 
 @Entity
+//@Builder
 @Table(name = "observer_image")
 @Setter
 @Getter

@@ -129,7 +129,7 @@
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center py-2">
                     <span class="fw-bold">Чат трансляции</span>
-                    <span class="badge bg-primary" th:text="${'Участников: ' + (onlineCount != null ?  onlineCount : '121')}">
+                    <span class="badge bg-primary" th:text="${'Участников: ' + (onlineCount != null ?  onlineCount : '?')}">
 <!--                            Участников: 12-->
 <!--                         th:text="${session.countPlaying == 0 ? '' : 'WL⚡500-700(' + session.countPlaying + ')'}"-->
                         </span>
@@ -145,15 +145,29 @@
 
                     </div>
 
+
+                    <!-- Thymeleaf цикл для динамических сообщений -->
+                    <div th:each="message : ${chatMessages}"
+                         th:classappend="${message.type == 'SYSTEM'} ? 'system-message' :
+                                                ${message.outgoing} ? 'outgoing message' : 'incoming message'"
+                         class="message">
+                        <div th:if="${message.type != 'SYSTEM' and !message.outgoing}"
+                             class="fw-bold" th:text="${message.senderName}">Имя отправителя</div>
+                        <div th:text="${message.content}">Текст сообщения</div>
+                        <small th:classappend="${message.type != 'SYSTEM' and message.outgoing} ? '' : 'text-muted'"
+                               th:text="${message.timestamp}">14:30</small>
+                    </div>
+
+
                     <!-- Панель ввода сообщения -->
-                    <div class="p-3 border-top">
-                        <form th:action="@{/send-message}" method="post" class="d-flex gap-2">
+                    <div class="p-3 border-top" >
+                        <form th:object="${message}" th:action="@{/api/chat/message}" method="post" class="d-flex gap-2" >
                             <div class="flex-grow-1">
                                 <input type="text"
                                        class="form-control"
                                        name="message"
                                        placeholder="Введите сообщение..."
-                                       th:value="${newMessage != null ? newMessage : ''}">
+                                       th:value="${content}">
                             </div>
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-send-fill"></i>

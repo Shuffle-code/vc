@@ -20,6 +20,7 @@ public class SessionListener implements HttpSessionListener {
 
     private static final Map<String, String> onlineUsers = new ConcurrentHashMap<>();
     private static AtomicInteger activeSessions = new AtomicInteger(0);
+    private static AtomicInteger authenticatedSessions = new AtomicInteger(0);
     @Override
     public void sessionCreated(HttpSessionEvent event) {
             activeSessions.incrementAndGet();
@@ -28,7 +29,13 @@ public class SessionListener implements HttpSessionListener {
 
     @Override
     public void sessionDestroyed(HttpSessionEvent event) {
-        activeSessions.decrementAndGet();
+        activeSessions.updateAndGet(value -> value > 0 ? value - 1 : 0);
+        HttpSession session = event.getSession();
+        // Проверяем, была ли сессия аутентифицирована
+        if (session.getAttribute("SPRING_SECURITY_CONTEXT") != null) {
+            authenticatedSessions.decrementAndGet();
+        }
+        log.info("Сессия уничтожена. Активных сессий: " + activeSessions.get());
     }
 
     public static String addUser(String sessionId, String username) {
@@ -52,7 +59,6 @@ public class SessionListener implements HttpSessionListener {
             log.info("sessionId или username равны null");
             return;
         }
-
         onlineUsers.entrySet().removeIf(entry ->
                 username.equals(entry.getValue()) && sessionId.equals(entry.getKey())
         );
@@ -61,7 +67,9 @@ public class SessionListener implements HttpSessionListener {
     public static int countOnlineUsers(){
         return onlineUsers.size();
     }
-
+    public static int getAuthenticatedUserCount() {
+        return authenticatedSessions.get();
+    }
     public static List<String> getOnlineUsers() {
         return new ArrayList<>(onlineUsers.values());
     }
@@ -69,4 +77,10 @@ public class SessionListener implements HttpSessionListener {
     public static AtomicInteger getActiveSessions(){
         return activeSessions;
     }
+
+    public static void userAuthenticated(HttpSession session) {
+        authenticatedSessions.incrementAndGet();
+    }
 }
+
+

@@ -35,7 +35,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/registration","/auth/register","/observer/image/**","/video",
-                                "/swagger-ui.html/**", "/auth/confirmation", "/observer/images/*", "/login","auth/login",  "/auth/invalid-confirmation").permitAll()
+                                "/swagger-ui.html/**", "/auth/confirmation", "/observer/images/*", "/login","auth/login",  "/auth/invalid-confirmation", "/video/rules").permitAll()
 //                        .requestMatchers().permitAll()
                         .anyRequest().authenticated()
 

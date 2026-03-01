@@ -1,6 +1,7 @@
 package tt.chat.vc.entity.security;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,6 +26,7 @@ public class Authority implements GrantedAuthority{
     private String permission;
 
     @ManyToMany(mappedBy = "authorities")
+    @JsonIgnore
     private Set<AccountRole> roles;
     @Override
     public String getAuthority() {

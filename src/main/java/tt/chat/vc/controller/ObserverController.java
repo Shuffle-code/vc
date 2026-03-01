@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import tt.chat.vc.dao.ObserverDao;
 import tt.chat.vc.dao.security.AccountUserDao;
 import tt.chat.vc.entity.Observer;
+import tt.chat.vc.entity.SessionListener;
 import tt.chat.vc.entity.security.AccountUser;
 import tt.chat.vc.service.ObserverImageService;
 import tt.chat.vc.service.ObserverService;
@@ -37,7 +38,7 @@ public class ObserverController {
 //    @ResponseBody
     @GetMapping("/all")
     public String getObserverList(Model model, HttpSession httpSession){
-        httpSession.setAttribute("countObservers", observerService.countObservers().toString());
+        httpSession.setAttribute("countObservers", SessionListener.getActiveSessions());
 //        httpSession.setAttribute("countPlaying", observerService.countPlaying());
         model.addAttribute("observers", observerService.findAllEnabledUsers(accountUserDao.getAllByEnabled()));
         return "observer/observer-list";

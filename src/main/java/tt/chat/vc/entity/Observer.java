@@ -1,12 +1,13 @@
 package tt.chat.vc.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 import tt.chat.vc.entity.common.InfoEntity ;
 import tt.chat.vc.entity.enums.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
@@ -38,7 +39,9 @@ public class Observer extends InfoEntity {
     @Column(name = "status")
     private Status status;
 
+//    @Builder.Default
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "observer")
+    @JsonIgnore
     private List<ObserverImage> images;
 
     public void addImage(ObserverImage observerImage) {
@@ -46,6 +49,7 @@ public class Observer extends InfoEntity {
             images = new ArrayList<>();
         }
         images.add(observerImage);
+        observerImage.setObserver(this);
     }
     @Override
     public String toString() {

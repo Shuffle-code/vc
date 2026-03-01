@@ -1,6 +1,9 @@
 package tt.chat.vc.entity.security;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import tt.chat.vc.entity.Message;
 import tt.chat.vc.entity.Observer;
+import tt.chat.vc.entity.ObserverImage;
 import tt.chat.vc.entity.common.InfoEntity ;
 import tt.chat.vc.entity.security.enums.AccountStatus ;
 import jakarta.persistence.*;
@@ -12,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,21 +28,28 @@ import java.util.stream.Collectors;
     public class AccountUser extends InfoEntity implements UserDetails {
 
     private String username;
+    @JsonIgnore
     private String password;
 
     private String firstname;
     private String lastname;
 
     @OneToOne(targetEntity = Observer.class, fetch = FetchType.EAGER)
+    @JsonIgnore
     @JoinColumn(name = "observer_id", referencedColumnName = "ID")
     private Observer observer;
 
     @Singular
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JsonIgnore
     @JoinTable(name = "user_role",
             joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
             inverseJoinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")})
     private Set<AccountRole> roles;
+
+//    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "accountUser")
+//    @JsonIgnore
+//    private List<Message> messages;
 
     @Transient
     private Set<Authority> authorities;
@@ -63,6 +74,7 @@ import java.util.stream.Collectors;
     @Builder.Default
     private boolean StatusPayment = false;
     @Override
+    @JsonIgnore
     public Set<GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> authorities = roles.stream()
                 .map(AccountRole::getAuthorities)

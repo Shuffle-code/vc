@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import tt.chat.vc.entity.OnlineUser;
+//import tt.chat.vc.entity.OnlineUser;
 import tt.chat.vc.entity.SessionListener;
 import tt.chat.vc.service.ObserverService;
 //import tt.chat.vc.service.OnlineUsersService;
@@ -33,7 +33,7 @@ public class VideoController {
         httpSession.setAttribute("countObservers", SessionListener.getActiveSessions());
 //        httpSession.setAttribute("countObservers", observerService.countObservers().toString());
         httpSession.setAttribute("data", currentDate);
-        model.addAttribute("onlineCount", SessionListener.getOnlineUsers().size());
+        model.addAttribute("onlineCount", SessionListener.getAuthenticatedUserCount());
 //                observerService.countAll().toString());
         return "video/video";
     }

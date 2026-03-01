@@ -1,4 +1,5 @@
 package tt.chat.vc.entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import tt.chat.vc.entity.common.BaseEntity;
@@ -7,8 +8,8 @@ import java.time.LocalDateTime;
 
 @Setter
 @Getter
-@NoArgsConstructor
-//@RequiredArgsConstructor
+//@NoArgsConstructor
+@RequiredArgsConstructor
 //@AllArgsConstructor
 @Entity
 @Table(name = "message")
@@ -20,14 +21,15 @@ public class Message extends BaseEntity {
     @Column(nullable = false, length = 1000)
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "account_user_id")
+//    @JsonIgnore
     private AccountUser accountUser;
 
     private LocalDateTime timestamp;
 
-    public Message(String content, AccountUser accountUser) {
-    }
+//    public Message(String content, AccountUser accountUser) {
+//    }
 
 //    public Message(String content, AccountUser accountUser) {
 //    }

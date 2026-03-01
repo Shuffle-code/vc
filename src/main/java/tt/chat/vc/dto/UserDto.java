@@ -18,7 +18,6 @@ import lombok.*;
 public class UserDto {
     @JsonIgnore
     private Long id;
-
     @NotBlank
     @Size(min = 4, max = 8)
     private String username;

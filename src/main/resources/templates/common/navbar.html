@@ -17,7 +17,7 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark" th:fragment="navi(activeTab)">
-    <a class="navbar-brand" th:href="@{/video}">_VideoStream TT Nsk_</a>
+    <a class="navbar-brand bi bi-camera-video me-4" th:href="@{/video}"> VideoStream TT Nsk</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -61,17 +61,18 @@
         </div>
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" th:href="@{/tour(id=${session.tourId})}" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:classappend="${activeTab == 'Participate' ? 'active' : ''}"
-                   th:text="${session.countObservers != null ? 'Условия трансляции (' + session.countObservers + ')' : (session.countObservers != 0 ? 'Условия трансляции (' + session.countObservers + ')' : session.data + '(' + session.countObservers + ')')}">
-<!--                th:text="${session.countObservers == null ? 'Условия трансляции' : (session.countObservers == 0 ? 'Условия трансляции' : session.data + '(' + session.countObservers + ')')}">-->
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:classappend="${activeTab == 'Participate' ? 'active' : ''}"
+                   th:text="${session.countObservers == null ? 'Условия трансляции' : (session.countObservers == 0 ? 'Условия трансляции' : session.data + '(' + session.countObservers + ')')}">
+<!--                   th:text="${session.countObservers != null ? 'Условия трансляции (' + session.countObservers + ')' : (session.countObservers != 0 ? 'Условия трансляции (' + session.countObservers + ')' : session.data + '(' + session.countObservers + ')')}">-->
+<!--                   th:text="${session.countObservers == null ? 'Условия трансляции' : (session.countObservers == 0 ? 'Условия трансляции' : session.data + '(' + session.countObservers + ')')}">-->
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <li>
                         <a class="dropdown-item" th:classappend="${activeTab == 'Rules' ? 'active' : ''}" th:href="@{/video/rules}">Условия трансляции</a>
                     </li>
                     <li>
-                        <a class="dropdown-item" th:classappend="${activeTab == 'Participate' ? 'active' : ''}" th:href="@{/video/rules}"
-                           th:text="${session.countObservers == 0 ? '' : session.data + '(' + session.countObservers + ')'}"></a>
+                        <a class="dropdown-item" th:classappend="${activeTab == 'Participate' ? 'active' : ''}" th:href="@{/video}"
+                           th:text="${session.countObservers == null ? '' : (session.countObservers == 0 ? session.data : session.data + '(' + session.countObservers + ')')}"></a>
                     </li>
                 </ul>
             </li>
