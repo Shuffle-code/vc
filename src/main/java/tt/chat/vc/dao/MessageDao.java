@@ -1,9 +1,12 @@
 package tt.chat.vc.dao;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import tt.chat.vc.entity.Message;
+import tt.chat.vc.entity.StreamChatMessage;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -12,4 +15,7 @@ public interface MessageDao extends JpaRepository<Message, Long> {
     List<Message> findAllOrderByTimestamp();
 
     List<Message> findTop50ByOrderByTimestampDesc();
+
+
+
 }

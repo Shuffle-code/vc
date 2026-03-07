@@ -24,7 +24,7 @@
 </head>
 <body>
 <div th:replace="~{common/navbar :: navi(ObserverInfo)}"></div>
-<div class="container-fluid py-3">
+<div class="container-fluid pt-3 pb-5">
     <!-- Основной контент -->
     <div class="row g-3">
         <!-- Видео панель -->
@@ -130,9 +130,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center py-2">
                     <span class="fw-bold">Чат трансляции</span>
                     <span class="badge bg-primary" th:text="${'Участников: ' + (onlineCount != null ?  onlineCount : '?')}">
-<!--                            Участников: 12-->
-<!--                         th:text="${session.countPlaying == 0 ? '' : 'WL⚡500-700(' + session.countPlaying + ')'}"-->
-                        </span>
+                    </span>
                 </div>
                 <div class="card-body p-0 d-flex flex-column">
                     <!-- Сообщения чата -->
@@ -160,7 +158,7 @@
 
 
                     <!-- Панель ввода сообщения -->
-                    <div class="p-3 border-top" >
+                    <div class="p-2 border-top" >
                         <form th:object="${message}" th:action="@{/api/chat/message}" method="post" class="d-flex gap-2" >
                             <div class="flex-grow-1">
                                 <input type="text"

@@ -13,6 +13,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
+import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
+import org.springframework.security.config.annotation.web.socket.AbstractSecurityWebSocketMessageBrokerConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
@@ -25,10 +27,10 @@ import java.io.IOException;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
-public class SecurityConfig {
-    @Autowired
+public class SecurityConfig{
+//    @Autowired
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
-    @Autowired
+//    @Autowired
     private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
     //        private final JwtConfigurer jwtConfigurer; /auth/registration
     @Bean
@@ -62,6 +64,22 @@ public class SecurityConfig {
                         .ignoringRequestMatchers("/api/public/**"));
         return http.build();
     }
+
+//    @Override
+//    protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
+//        messages
+//                // Разрешаем подписку на топики стримов только аутентифицированным
+//                .simpSubscribeDestMatchers("/topic/streams/*").authenticated()
+//                // Разрешаем отправку сообщений в чат только аутентифицированным
+//                .simpDestMatchers("/app/streams/*/message").authenticated()
+//                // Все остальные сообщения требуют аутентификации
+//                .anyMessage().authenticated();
+//    }
+//
+//    @Override
+//    protected boolean sameOriginDisabled() {
+//        return true; // Для разработки, в production настроить CORS правильно
+//    }
 
 //    @Bean
 //    public AccessDeniedHandler accessDeniedHandler() {

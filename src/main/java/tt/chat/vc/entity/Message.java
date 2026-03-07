@@ -25,7 +25,7 @@ public class Message extends BaseEntity {
     @JoinColumn(name = "account_user_id")
 //    @JsonIgnore
     private AccountUser accountUser;
-
+    @Column
     private LocalDateTime timestamp;
 
 //    public Message(String content, AccountUser accountUser) {

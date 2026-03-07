@@ -179,3 +179,100 @@ window.addEventListener('beforeunload', () => {
         onLogout();
     }
 })
+
+
+
+// // Подключение к чату
+// class ChatClient {
+//     constructor(streamId) {
+//         this.streamId = streamId;
+//         this.stompClient = null;
+//         this.messageCallbacks = [];
+//     }
+//
+//     connect() {
+//         const socket = new SockJS('/ws-chat');
+//         this.stompClient = Stomp.over(socket);
+//
+//         this.stompClient.connect({},
+//             (frame) => {
+//                 console.log('Connected: ' + frame);
+//
+//                 // Подписка на топик стрима
+//                 this.stompClient.subscribe(
+//                     `/topic/streams/${this.streamId}`,
+//                     (message) => {
+//                         const chatMessage = JSON.parse(message.body);
+//                         this.messageCallbacks.forEach(cb => cb(chatMessage));
+//                     }
+//                 );
+//
+//                 // Загружаем историю
+//                 this.loadHistory();
+//             },
+//             (error) => {
+//                 console.error('Connection error: ', error);
+//             }
+//         );
+//     }
+//
+//     loadHistory(limit = 50, before = null) {
+//         let url = `/api/streams/${this.streamId}/chat/messages?limit=${limit}`;
+//         if (before) {
+//             url += `&before=${before}`;
+//         }
+//
+//         fetch(url)
+//             .then(response => response.json())
+//             .then(messages => {
+//                 // Отображаем историю в обратном порядке
+//                 messages.reverse().forEach(msg => this.displayMessage(msg));
+//             })
+//             .catch(err => console.error('Failed to load history:', err));
+//     }
+//
+//     sendMessage(content) {
+//         if (!this.stompClient || !this.stompClient.connected) {
+//             console.error('Not connected');
+//             return;
+//         }
+//
+//         this.stompClient.send(
+//             `/app/streams/${this.streamId}/message`,
+//             {},
+//             JSON.stringify({ content: content })
+//         );
+//     }
+//
+//     onMessage(callback) {
+//         this.messageCallbacks.push(callback);
+//     }
+//
+//     displayMessage(message) {
+//         const container = document.getElementById('chat-messages');
+//         const element = document.createElement('div');
+//         element.className = `chat-message ${message.type.toLowerCase()}`;
+//         element.innerHTML = `
+//             <span class="time">${new Date(message.timestamp).toLocaleTimeString()}</span>
+//             <span class="user">${message.username}:</span>
+//             <span class="content">${message.content}</span>
+//         `;
+//         container.appendChild(element);
+//         container.scrollTop = container.scrollHeight;
+//     }
+// }
+//
+// // Использование
+// const chat = new ChatClient(123); // streamId = 123
+// chat.connect();
+//
+// chat.onMessage((message) => {
+//     chat.displayMessage(message);
+// });
+//
+// // Отправка сообщения
+// document.getElementById('send-btn').addEventListener('click', () => {
+//     const input = document.getElementById('message-input');
+//     chat.sendMessage(input.value);
+//     input.value = '';
+// });
