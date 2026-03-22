@@ -8,20 +8,26 @@ package tt.chat.vc.service;
         import org.springframework.stereotype.Service;
         import org.springframework.transaction.annotation.Transactional;
         import tt.chat.vc.dao.MessageDao;
+        import tt.chat.vc.dao.ObserverDao;
         import tt.chat.vc.dao.StreamChatDao;
         import tt.chat.vc.dao.StreamChatMessageDao;
         import tt.chat.vc.dao.security.AccountUserDao;
         import tt.chat.vc.dto.StreamChatMessageDto;
         import tt.chat.vc.entity.Message;
+        import tt.chat.vc.entity.Observer;
         import tt.chat.vc.entity.StreamChat;
         import tt.chat.vc.entity.StreamChatMessage;
+        import tt.chat.vc.entity.enums.StreamChatMessageStatus;
         import tt.chat.vc.entity.enums.StreamChatStatus;
         import tt.chat.vc.entity.security.AccountUser;
         import tt.chat.vc.entity.security.enums.AccountStatus;
         import tt.chat.vc.exception.ChatException;
 
+        import java.net.URLDecoder;
+        import java.nio.charset.StandardCharsets;
         import java.time.LocalDateTime;
         import java.util.List;
+        import java.util.Optional;
         import java.util.UUID;
         import java.util.stream.Collectors;
 
@@ -35,20 +41,43 @@ public class ChatService {
     private final StreamChatMessageDao streamChatMessageDao;
     private final AccountUserDao accountUserDao;
     private final StreamChatDao streamChatDao;
+    private final ObserverDao observerDao;
 
     // Константы ограничений
     private static final int MAX_MESSAGE_LENGTH = 500;
     private static final int MESSAGE_RATE_LIMIT = 5; // сообщений в секунду
-    private static final int MESSAGE_HISTORY_LIMIT = 50;
+    private static final int MESSAGE_HISTORY_LIMIT = 40;
 
 
     public List<Message> getRecentMessages() {
-        return messageDao.findTop50ByOrderByTimestampDesc();
+        return messageDao.findTop10ByOrderByTimestampDesc();
     }
 
-    public List<Message> getAllMessages() {
-        return messageDao.findAllOrderByTimestamp();
+    public List<StreamChatMessage> getRecentMessages(Long streamId) {
+        return streamChatMessageDao.findLast10MessagesByStreamId(streamId);
     }
+
+    public String decodeMessage(String encodedMessage) {
+        try {
+            return URLDecoder.decode(encodedMessage, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return encodedMessage;
+        }
+    }
+
+    public List<StreamChatMessage> getRecentStreamChatMessages(Long streamId) {
+        return streamChatMessageDao.findLast10MessagesByStreamId(streamId);
+    }
+
+//    public List<Message> getAllMessages() {
+//        return messageDao.findAllOrderByTimestamp();
+//    }
+
+    public List<Message> getAllMessages() {
+        return messageDao.findAll();
+    }
+
     @Transactional
     public Message save (Message message) {
         return messageDao.save(message);
@@ -59,7 +88,7 @@ public class ChatService {
      * Отправка сообщения в чат стрима
      */
     @Transactional
-    public StreamChatMessageDto sendMessage(Long streamId, String userId, String content) {
+    public StreamChatMessageDto sendMessage(Long streamId, Long userId, String content) {
         log.info("Sending message to stream {} from user {}: {}", streamId, userId, content);
 
         // 1. Проверка длины сообщения
@@ -78,6 +107,8 @@ public class ChatService {
         AccountUser accountUser = accountUserDao.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new ChatException("User not found"));
 
+        Observer observer = observerDao.findByAccountUserId(accountUser.getId());
+
         // 4. Проверка бана/мута
         if (accountUser.getStatus() == AccountStatus.BANNED) {
             throw new ChatException("User is banned");
@@ -88,17 +119,18 @@ public class ChatService {
 
         // 5. Rate limiting (проверка частоты сообщений)
         LocalDateTime oneSecondAgo = LocalDateTime.now().minusSeconds(1);
-        int recentMessages = streamChatMessageDao.countBySenderIdAndTimeStampAfter(userId, oneSecondAgo);
+        int recentMessages = streamChatMessageDao.countBySenderIdAndStreamIdAndTimestampAfter(userId, streamId, oneSecondAgo);
         if (recentMessages >= MESSAGE_RATE_LIMIT) {
             throw new ChatException("Rate limit exceeded. Please slow down.");
         }
-
+        String cleanContent = content.replaceAll("_csrf=[^&\\s]+&message=?", "").trim();
         // 6. Сохранение в БД
         StreamChatMessage streamChatMessage =StreamChatMessage.builder()
-                .streamId(String.valueOf(streamId))
-                .senderId(userId)
-                .content(content.trim())
-                .timeStamp(LocalDateTime.now())
+                .streamChat(streamChat)
+                .observer(observer)
+                .content(cleanContent)
+                .streamChatMessageStatus(StreamChatMessageStatus.USER)
+                .timestamp(LocalDateTime.now())
                 .build();
 
         StreamChatMessage savedMessage = streamChatMessageDao.save(streamChatMessage);
@@ -123,22 +155,24 @@ public class ChatService {
     public List<StreamChatMessageDto> getChatHistory(Long streamId, int limit, Long before) {
         log.info("Getting chat history for stream {} with limit {}", streamId, limit);
 
-        if (limit <= 0 || limit > 100) {
-            limit = MESSAGE_HISTORY_LIMIT;
-        }
-
-        PageRequest pageRequest = PageRequest.of(0, limit, Sort.by("timestamp").descending());
+//        if (limit <= 0 || limit > 100) {
+//            limit = MESSAGE_HISTORY_LIMIT;
+//        }
+//        PageRequest pageRequest = PageRequest.of(0, limit, Sort.by("timestamp").descending());
 
         List<StreamChatMessage> messages;
         if (before != null) {
             // Пагинация "загрузить старее чем messageId"
-            messages = streamChatMessageDao.findByStreamIdAndIdLessThanOrderByTimeStampDesc(
-                    streamId, before.toString(), pageRequest);
-        } else {
-            // Первая загрузка
-            messages = streamChatMessageDao.findByStreamIdOrderByTimeStampDesc(streamId, pageRequest);
-        }
+//            messages = streamChatMessageDao.findByStreamIdAndIdLessThanOrderByTimestampDesc(
+//                    streamId, before.toString(), pageRequest);
 
+            messages = streamChatMessageDao.findAll();
+        } else {
+//            messages = streamChatMessageDao.findAll();
+            // Первая загрузка
+            messages = streamChatMessageDao.findLast10MessagesByStreamId(streamId);
+//            findByStreamIdOrderByTimestampDesc(streamId, pageRequest);
+        }
         return messages.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
@@ -148,42 +182,47 @@ public class ChatService {
      * Уведомление о подключении пользователя к чату
      */
     @Transactional
-    public void userJoined(Long streamId, String userId) {
-        AccountUser accountUser = accountUserDao.findById(Long.valueOf(userId)).orElse(null);
-        if (accountUser == null) return;
-
-        StreamChatMessageDto joinMessage = StreamChatMessageDto.builder()
-                .id(UUID.randomUUID().toString())
+    public void userJoined(Long streamId, Long userId) {
+        Optional<AccountUser> accountUser = accountUserDao.findById(userId);
+        Observer observer = observerDao.findByAccountUserId(accountUser.get().getId());
+        StreamChatMessageDto leaveMessage = StreamChatMessageDto.builder()
+                .id(System.currentTimeMillis())
                 .streamId(streamId)
-                .senderId(userId)
-                .username(accountUser.getUsername())
-                .content(accountUser.getUsername() + " присоеденился к чату")
+                .senderId(observer.getId())
+                .username(observer.getFirstname() + " " + observer.getLastname())
+                .content(observer.getFirstname() + " покинул чат")
                 .timestamp(LocalDateTime.now())
-                .type(StreamChatStatus.JOIN)
+                .status(StreamChatMessageStatus.JOIN)
                 .build();
-
         messagingTemplate.convertAndSend(
                 String.format("/topic/streams/%d", streamId),
-                joinMessage
-        );
+                leaveMessage);
     }
 
     /**
      * Уведомление об отключении пользователя
      */
     @Transactional
-    public void userLeft(Long streamId, String userId) {
+    public void userLeft(Long streamId, Long userId) {
         AccountUser accountUser = accountUserDao.findById(Long.valueOf(userId)).orElse(null);
         if (accountUser == null) return;
 
+//        StreamChatMessageDto joinNotification = StreamChatMessageDto.builder()
+//                .content(" присоединился к чату")
+//                .status(StreamChatMessageStatus.JOIN)
+//                .senderId(joinMessage.getUserId())
+//                .username(username)
+//                .timestamp(LocalDateTime.now())
+//                .build();
+
         StreamChatMessageDto leaveMessage = StreamChatMessageDto.builder()
-                .id(UUID.randomUUID().toString())
+                .id(System.currentTimeMillis())
                 .streamId(streamId)
                 .senderId(userId)
                 .username(accountUser.getUsername())
                 .content(accountUser.getUsername() + " покинул чат")
                 .timestamp(LocalDateTime.now())
-                .type(StreamChatStatus.LEAVE)
+                .status(StreamChatMessageStatus.LEAVE)
                 .build();
 
         messagingTemplate.convertAndSend(
@@ -198,13 +237,12 @@ public class ChatService {
     @Transactional
     public void sendSystemMessage(Long streamId, String content) {
         StreamChatMessageDto systemMessage = StreamChatMessageDto.builder()
-                .id(UUID.randomUUID().toString())
+                .id(Long.valueOf(String.valueOf(UUID.randomUUID())))
                 .streamId(streamId)
-                .senderId("system")
                 .username("System")
                 .content(content)
                 .timestamp(LocalDateTime.now())
-                .type(StreamChatStatus.SYSTEM)
+                .status(StreamChatMessageStatus.SYSTEM)
                 .build();
 
         messagingTemplate.convertAndSend(
@@ -215,12 +253,13 @@ public class ChatService {
 
     private StreamChatMessageDto convertToDto(StreamChatMessage streamChatMessage) {
         return StreamChatMessageDto.builder()
-                .id(streamChatMessage.getId().toString())
-                .streamId(Long.valueOf(streamChatMessage.getStreamId()))
-                .senderId(streamChatMessage.getSenderId())
+                .id(streamChatMessage.getId())
+                .streamId(Long.valueOf(streamChatMessage.getStreamChat().getId()))
+                .senderId(streamChatMessage.getObserver().getId())
                 .content(streamChatMessage.getContent())
-                .timestamp(streamChatMessage.getTimeStamp())
-//                .type()
+                .timestamp(streamChatMessage.getTimestamp())
+                .status(streamChatMessage.getStreamChatMessageStatus())
+                .username(streamChatMessage.getObserver().getFirstname() + " " + streamChatMessage.getObserver().getLastname())
                 .build();
     }
 }

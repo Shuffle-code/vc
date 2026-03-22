@@ -12,5 +12,5 @@ public class StreamChat extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StreamChatStatus status;
-    private String ownerId; // владелец
+    private Long ownerId; // владелец
 }

@@ -19,6 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import java.io.IOException;
 //import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -35,7 +36,11 @@ public class SecurityConfig{
     //        private final JwtConfigurer jwtConfigurer; /auth/registration
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> auth
+        http
+//                .csrf(csrf -> csrf
+//                        .disable())
+//                csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/registration","/auth/register","/observer/image/**","/video",
                                 "/swagger-ui.html/**", "/auth/confirmation", "/observer/images/*", "/login","auth/login",  "/auth/invalid-confirmation", "/video/rules").permitAll()
 //                        .requestMatchers().permitAll()
@@ -64,35 +69,6 @@ public class SecurityConfig{
                         .ignoringRequestMatchers("/api/public/**"));
         return http.build();
     }
-
-//    @Override
-//    protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
-//        messages
-//                // Разрешаем подписку на топики стримов только аутентифицированным
-//                .simpSubscribeDestMatchers("/topic/streams/*").authenticated()
-//                // Разрешаем отправку сообщений в чат только аутентифицированным
-//                .simpDestMatchers("/app/streams/*/message").authenticated()
-//                // Все остальные сообщения требуют аутентификации
-//                .anyMessage().authenticated();
-//    }
-//
-//    @Override
-//    protected boolean sameOriginDisabled() {
-//        return true; // Для разработки, в production настроить CORS правильно
-//    }
-
-//    @Bean
-//    public AccessDeniedHandler accessDeniedHandler() {
-//        return new AccessDeniedHandler() {
-//            @Override
-//            public void handle(HttpServletRequest request, HttpServletResponse response,
-//                               AccessDeniedException accessDeniedException) throws IOException {
-//                response.sendRedirect("/error/access-denied");
-//
-//            }
-//        };
-//    }
-
 }
 //        http.authorizeHttpRequests(HttpSecurity.RequestMatcherConfigurer(filterChain()))
 ////                .requestMatchers(HttpMethod.PUT,"/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html/**").hasAuthority("observer.create")

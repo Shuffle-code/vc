@@ -11,6 +11,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.stereotype.Component;
 import tt.chat.vc.entity.SessionListener;
 import tt.chat.vc.entity.security.AccountUser;
+import tt.chat.vc.service.ChatService;
 import tt.chat.vc.service.UserService;
 
 import java.io.IOException;
@@ -19,12 +20,16 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
+    private final ChatService chatService;
+    private final UserService userService;
     @Override
     public void onLogoutSuccess(HttpServletRequest request,
                                 HttpServletResponse response,
                                 Authentication authentication)
             throws IOException{
-//        String username = authentication.getName();
+        String username = authentication.getName();
+        AccountUser accountUser = userService.findByUsername(username);
+        chatService.userLeft(123L,accountUser.getId());
 //        SessionListener.deleteUser(SessionListener.findFirstSessionIdByUsername(username),username);
 //        log.info(SessionListener.getOnlineUsers().toString()); // не работает при окончании сессии по времени
         if (!request.getHeader("referer").contains("logout")) {

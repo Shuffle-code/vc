@@ -1,5 +1,6 @@
 package tt.chat.vc.dao;
 
+import org.springframework.data.repository.query.Param;
 import tt.chat.vc.entity.Observer;
 import tt.chat.vc.entity.enums.Status;
 import org.springframework.data.domain.Pageable;
@@ -21,5 +22,12 @@ public interface ObserverDao extends JpaRepository<Observer, Long> {
     @Query(value = "SELECT ID_TTWR FROM ttvc.account_user where ID_TTWR != 'null' & ID_TTWR != ''", nativeQuery = true)
     List<String> getIdTtw();
 //    List<Observer> findAllById (List<Long> ids, Sort sort);
-    Optional<Observer> findByLastname(String title);
+    Optional<Observer> findByLastname(String name);
+//    @Query(value = "SELECT * FROM observer WHERE account_user_id = :userId", nativeQuery = true)
+//    Observer findByAccountUserId(@Param("userId") Long userId);
+
+    @Query(value = "SELECT * FROM observer WHERE id = :userId", nativeQuery = true)
+    Observer findByAccountUserId(@Param("userId") Long userId);
+
+
 }

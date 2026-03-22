@@ -14,7 +14,11 @@ public interface MessageDao extends JpaRepository<Message, Long> {
     @Query("SELECT m FROM Message m ORDER BY m.timestamp ASC")
     List<Message> findAllOrderByTimestamp();
 
-    List<Message> findTop50ByOrderByTimestampDesc();
+    List<Message> findAll ();
+
+    List<Message> findTop10ByOrderByTimestampDesc();
+
+
 
 
 

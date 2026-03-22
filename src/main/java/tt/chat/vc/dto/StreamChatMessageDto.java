@@ -1,10 +1,8 @@
 package tt.chat.vc.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import tt.chat.vc.entity.enums.MessageType;
+import tt.chat.vc.entity.enums.StreamChatMessageStatus;
 import tt.chat.vc.entity.enums.StreamChatStatus;
 
 import java.time.LocalDateTime;
@@ -13,17 +11,24 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+//@RequiredArgsConstructor
 @Builder
 public class StreamChatMessageDto {
-    private String id;
+    private Long id;
     private Long streamId;
-    private String senderId;
+    private Long senderId;
     private String username;
     private String content;
     private LocalDateTime timestamp;
-    private StreamChatStatus type = StreamChatStatus.RUN;
+    private StreamChatMessageStatus status = StreamChatMessageStatus.RUN;
 
-//    public enum MessageType {
+    public StreamChatMessageDto(Long id, String content, String username,StreamChatStatus streamChatStatus, LocalDateTime timestamp) {
+    }
+
+    public StreamChatMessageDto(Long id, String username, Long streamId, String content, StreamChatMessageStatus streamChatMessageStatus, LocalDateTime timestamp) {
+    }
+
+    //    public enum MessageType {
 //        CHAT, JOIN, LEAVE, SYSTEM
 //    }
     @Data

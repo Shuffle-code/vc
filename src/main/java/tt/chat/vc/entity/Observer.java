@@ -53,13 +53,12 @@ public class Observer extends InfoEntity {
     }
     @Override
     public String toString() {
-        return "Player{" +
+        return "Observer{" +
                 "id=" + getId() +
                 ", firstname ='" + firstname + '\'' +
                 ", patronymic =" + patronymic +
                 ", lastname =" + lastname +
                 ", yearOfBirth =" + yearOfBirth +
-//                ", manufacturer=" + manufacturer.getName() +
                 "}\n";
     }
 

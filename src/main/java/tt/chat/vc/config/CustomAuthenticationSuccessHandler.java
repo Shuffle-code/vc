@@ -3,6 +3,7 @@ package tt.chat.vc.config;
 import lombok.extern.slf4j.Slf4j;
 import tt.chat.vc.entity.SessionListener;
 import tt.chat.vc.entity.security.AccountUser;
+import tt.chat.vc.service.ChatService;
 import tt.chat.vc.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final UserService userService;
+    private final ChatService chatService;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
@@ -33,6 +35,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         session.setAttribute("user", accountUser);
 //        SessionListener.addUser(session.getId(), username);
         SessionListener.userAuthenticated(session);
+//        chatService.userJoined(123L, accountUser.getId());
         if (!request.getHeader("referer").contains("login")) {
             response.sendRedirect(request.getHeader("referer"));
         } else {

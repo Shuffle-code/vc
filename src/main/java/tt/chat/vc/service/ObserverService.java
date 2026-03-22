@@ -62,6 +62,10 @@ public class ObserverService {
         return findById(observerDao.getObserverIdByIdTtw(ratingTtw));
     }
 
+//    public String getObserverNameByAccountUsername (String username){
+//        return String.valueOf(observerDao.findByAccountUserId(accountUserDao.findByUsername(username).get().getId()));
+//    }
+
     public List<String> getIdTtw(){
         return observerDao.getIdTtw();
     }

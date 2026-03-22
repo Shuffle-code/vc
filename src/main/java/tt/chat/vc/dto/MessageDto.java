@@ -16,7 +16,6 @@ public class MessageDto {
     @JsonIgnore
     private Long id;
     private String content;
-    //    private AccountUser accountUser;
     private Long userId;
     private LocalDateTime timestamp;
 

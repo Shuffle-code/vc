@@ -10,31 +10,45 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 //import tt.chat.vc.entity.OnlineUser;
 import tt.chat.vc.entity.SessionListener;
+import tt.chat.vc.entity.security.AccountUser;
+import tt.chat.vc.service.ChatService;
 import tt.chat.vc.service.ObserverService;
+import tt.chat.vc.service.UserService;
 //import tt.chat.vc.service.OnlineUsersService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/video")
 public class VideoController {
-    private final ObserverService observerService;
-//    @Autowired
-//    private OnlineUsersService onlineUsersService;
+    private final UserService userService;
+    private final ChatService chatService;
     private static final DateTimeFormatter formatter =
             DateTimeFormatter.ofPattern("HH:mm:ss");
     private final LocalDate currentDate = LocalDate.now();
+
     @GetMapping
-    public String video(Model model, HttpSession httpSession) {
+    public String video(Model model, HttpSession httpSession, Principal principal) {
+        Long currentUserId = Optional.ofNullable(principal)
+                .map(Principal::getName)
+                .map(username -> userService.findByUsername(username))
+                .map(AccountUser::getId)
+                .orElse(-1L);
         httpSession.setAttribute("countObservers", SessionListener.getActiveSessions());
-//        httpSession.setAttribute("countObservers", observerService.countObservers().toString());
         httpSession.setAttribute("data", currentDate);
+        httpSession.setAttribute("onlineCount", SessionListener.getAuthenticatedUserCount());
         model.addAttribute("onlineCount", SessionListener.getAuthenticatedUserCount());
-//                observerService.countAll().toString());
+        model.addAttribute( "currentUserId", currentUserId);
+        model.addAttribute( "streamId", 123L);
+//        model.addAttribute( "username", username);
+        model.addAttribute("messages", chatService.getRecentStreamChatMessages(123L));
         return "video/video";
     }
     @GetMapping("/rules")

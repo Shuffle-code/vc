@@ -12,15 +12,12 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 //@AllArgsConstructor
 @Entity
+//@Builder
+//@ToString
 @Table(name = "message")
 public class Message extends BaseEntity {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
-
     @Column(nullable = false, length = 1000)
     private String content;
-
     @ManyToOne
     @JoinColumn(name = "account_user_id")
 //    @JsonIgnore
@@ -33,6 +30,16 @@ public class Message extends BaseEntity {
 
 //    public Message(String content, AccountUser accountUser) {
 //    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "id=" + getId() +
+                ", content ='" + content + '\'' +
+                ", timestamp =" + timestamp +
+                ", accountUserName =" + accountUser.getUsername() +
+                "}\n";
+    }
 
     @PrePersist
 
