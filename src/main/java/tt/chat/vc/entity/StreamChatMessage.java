@@ -5,11 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import tt.chat.vc.entity.common.BaseEntity;
 import tt.chat.vc.entity.enums.StreamChatMessageStatus;
-import tt.chat.vc.entity.enums.StreamChatStatus;
-import tt.chat.vc.entity.security.AccountUser;
-
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -37,5 +33,4 @@ public class StreamChatMessage extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StreamChatMessageStatus streamChatMessageStatus;
-
 }

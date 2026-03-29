@@ -1,15 +1,12 @@
 package tt.chat.vc.config;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
-import tt.chat.vc.entity.SessionListener;
 import tt.chat.vc.entity.security.AccountUser;
 import tt.chat.vc.service.ChatService;
 import tt.chat.vc.service.UserService;
@@ -27,15 +24,14 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
                                 HttpServletResponse response,
                                 Authentication authentication)
             throws IOException{
-        String username = authentication.getName();
-        AccountUser accountUser = userService.findByUsername(username);
-        chatService.userLeft(123L,accountUser.getId());
-//        SessionListener.deleteUser(SessionListener.findFirstSessionIdByUsername(username),username);
-//        log.info(SessionListener.getOnlineUsers().toString()); // не работает при окончании сессии по времени
+//        String username = authentication.getName();
+//        AccountUser accountUser = userService.findByUsername(username);
+//        chatService.userJoined(123L,accountUser.getId());
         if (!request.getHeader("referer").contains("logout")) {
             response.sendRedirect(request.getHeader("referer"));
         } else {
             response.sendRedirect(request.getContextPath() + "/video");
+
         }
     }
 

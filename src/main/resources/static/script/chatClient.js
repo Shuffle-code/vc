@@ -5,7 +5,7 @@ class ChatClient {
         this.messageCallbacks = [];
         this.connectCallbacks = [];
         this.pendingMessages = [];
-        this.isFirstConnection = true;
+        this.pendingJoin = null;
         this.reconnectAttempts = 0;
         this.maxReconnectAttempts = 10;
     }
@@ -17,7 +17,18 @@ class ChatClient {
             (frame) => this.onConnected(frame),
             (error) => this.onError(error)
         );
+        // this.sendJoin(this.pendingJoin);
+        // this.pendingJoin = null;
+
     }
+
+    // sendJoin(data) {
+    //     if (this.stompClient && this.stompClient.connected) {
+    //         this.stompClient.send(`/app/streams/${this.streamId}/join`, {}, JSON.stringify(data));
+    //     } else {
+    //         this.pendingJoin = data; // Сохраняем для отправки после подключения
+    //     }
+    // }
 
     onConnected(frame) {
         console.log('✅ Connected to WebSocket', frame);

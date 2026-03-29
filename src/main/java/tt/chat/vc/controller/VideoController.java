@@ -30,9 +30,10 @@ import java.util.stream.Collectors;
 public class VideoController {
     private final UserService userService;
     private final ChatService chatService;
-    private static final DateTimeFormatter formatter =
-            DateTimeFormatter.ofPattern("HH:mm:ss");
+//    private static final DateTimeFormatter formatter =
+//            DateTimeFormatter.ofPattern("HH:mm:ss");
     private final LocalDate currentDate = LocalDate.now();
+    private static final Long STREAM_ID = 123L;
 
     @GetMapping
     public String video(Model model, HttpSession httpSession, Principal principal) {
@@ -43,12 +44,11 @@ public class VideoController {
                 .orElse(-1L);
         httpSession.setAttribute("countObservers", SessionListener.getActiveSessions());
         httpSession.setAttribute("data", currentDate);
-        httpSession.setAttribute("onlineCount", SessionListener.getAuthenticatedUserCount());
+//        httpSession.setAttribute("onlineCount", SessionListener.getAuthenticatedUserCount());
         model.addAttribute("onlineCount", SessionListener.getAuthenticatedUserCount());
         model.addAttribute( "currentUserId", currentUserId);
-        model.addAttribute( "streamId", 123L);
-//        model.addAttribute( "username", username);
-        model.addAttribute("messages", chatService.getRecentStreamChatMessages(123L));
+        model.addAttribute( "streamId", STREAM_ID);
+        model.addAttribute("messages", chatService.getRecentStreamChatMessages(STREAM_ID));
         return "video/video";
     }
     @GetMapping("/rules")

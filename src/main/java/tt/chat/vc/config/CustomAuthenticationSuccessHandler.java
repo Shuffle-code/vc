@@ -28,14 +28,12 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                                         HttpServletResponse response,
                                         Authentication authentication)
             throws IOException{
-
         String username = authentication.getName();
         AccountUser accountUser = userService.findByUsername(username);
         HttpSession session = request.getSession();
         session.setAttribute("user", accountUser);
-//        SessionListener.addUser(session.getId(), username);
         SessionListener.userAuthenticated(session);
-//        chatService.userJoined(123L, accountUser.getId());
+
         if (!request.getHeader("referer").contains("login")) {
             response.sendRedirect(request.getHeader("referer"));
         } else {

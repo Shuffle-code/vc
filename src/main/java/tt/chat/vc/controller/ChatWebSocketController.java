@@ -19,6 +19,7 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import tt.chat.vc.dto.StreamChatMessageDto;
 import tt.chat.vc.dto.UserDto;
 import tt.chat.vc.entity.JoinMessage;
+import tt.chat.vc.entity.SessionListener;
 import tt.chat.vc.entity.enums.StreamChatMessageStatus;
 import tt.chat.vc.entity.security.AccountUser;
 import tt.chat.vc.service.ChatService;
@@ -65,158 +66,6 @@ public class ChatWebSocketController {
     }
 
     /**
-     * Обработка подписки на топик
-     * Вызывается когда клиент подписывается на /topic/streams/{streamId}
-     */
-//    @SubscribeMapping("/streams/{streamId}")
-//    public void handleSubscription(
-//            @DestinationVariable Long streamId,
-//            Principal principal,
-//            SimpMessageHeaderAccessor headerAccessor) {
-//        log.info("User {} subscribed to stream {}", principal.getName(), streamId);
-//        // Сохраняем в сессии информацию о подписке
-//        headerAccessor.getSessionAttributes().put("streamId", streamId);
-//        headerAccessor.getSessionAttributes().put("userId", principal.getName());
-//        // Отправляем уведомление о подключении
-//        chatService.userJoined(streamId, userService.findByUsername(principal.getName()).getId());
-//        return new StreamChatMessage("Welcome to stream " + streamId + "!");
-//        return chatService.getRecentStreamChatMessages(streamId);
-//    }
-
-//    private final Map<String, SessionInfo> activeSessions = new ConcurrentHashMap<>();
-//
-//    @EventListener
-//    public void handleSessionConnected(SessionConnectedEvent event) {
-//        StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
-//        String sessionId = headers.getSessionId();
-//
-//        log.info("🔌 New session connected: {}", sessionId);
-//    }
-//
-//    @EventListener
-//    public void handleSessionSubscribeEvent(SessionSubscribeEvent event) {
-//        StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
-//        String destination = headers.getDestination();
-//
-//        if (destination != null && destination.startsWith("/topic/streams/")) {
-//            String sessionId = headers.getSessionId();
-//            Long streamId = Long.parseLong(destination.replace("/topic/streams/", ""));
-//            Principal principal = headers.getUser();
-//
-//            if (principal != null) {
-//                Long userId = getUserIdFromPrincipal(principal);
-//
-//                // Проверяем, была ли уже сессия для этого пользователя
-//                SessionInfo existingSession = findSessionByUserIdAndStream(userId, streamId);
-//
-//                if (existingSession != null) {
-//                    log.info("🔄 User {} reconnected to stream {}, replacing old session", userId, streamId);
-//                    // Удаляем старую сессию без отправки LEAVE
-//                    activeSessions.remove(existingSession.getSessionId());
-//                }
-//
-//                // Сохраняем новую сессию
-//                SessionInfo sessionInfo = SessionInfo.builder()
-//                        .sessionId(sessionId)
-//                        .userId(userId)
-//                        .streamId(streamId)
-//                        .connectedAt(LocalDateTime.now())
-//                        .build();
-//
-//                activeSessions.put(sessionId, sessionInfo);
-//
-//                // Сохраняем в атрибуты сессии
-//                headers.getSessionAttributes().put("streamId", streamId);
-//                headers.getSessionAttributes().put("userId", userId);
-//
-//                log.info("✅ User {} joined stream {} (session: {})", userId, streamId, sessionId);
-//
-//                // Отправляем JOIN только если это не переподключение
-//                if (existingSession == null) {
-//                    sendJoinNotification(streamId, userId);
-//                }
-//            }
-//        }
-//    }
-//
-//    @EventListener
-//    public void handleSessionDisconnect(SessionDisconnectEvent event) {
-//        StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
-//        String sessionId = headers.getSessionId();
-//
-//        SessionInfo sessionInfo = activeSessions.remove(sessionId);
-//
-//        if (sessionInfo != null) {
-//            Long streamId = sessionInfo.getStreamId();
-//            Long userId = sessionInfo.getUserId();
-//
-//            // Проверяем, есть ли другие активные сессии для этого пользователя
-//            boolean hasOtherSessions = activeSessions.values().stream()
-//                    .anyMatch(s -> s.getUserId().equals(userId) && s.getStreamId().equals(streamId));
-//
-//            if (!hasOtherSessions) {
-//                // Нет других сессий - пользователь действительно покинул чат
-//                log.info("👋 User {} left stream {} (no other sessions)", userId, streamId);
-//                sendLeaveNotification(streamId, userId);
-//                chatService.userLeft(streamId, userId);
-//            } else {
-//                log.info("🔄 User {} has other active sessions, skipping LEAVE", userId);
-//            }
-//        }
-//    }
-//
-//    private void sendJoinNotification(Long streamId, Long userId) {
-//        UserDto user = userService.findById(userId);
-//        if (user != null) {
-//            StreamChatMessageDto joinNotification = StreamChatMessageDto.builder()
-//                    .content(user.getUsername() + " присоединился к чату")
-//                    .status(StreamChatMessageStatus.JOIN)
-//                    .senderId(userId)
-//                    .username(user.getUsername())
-//                    .timestamp(LocalDateTime.now())
-//                    .build();
-//
-//            messagingTemplate.convertAndSend("/topic/streams/" + streamId, joinNotification);
-//        }
-//    }
-//
-//    private void sendLeaveNotification(Long streamId, Long userId) {
-//        UserDto user = userService.findById(userId);
-//        if (user != null) {
-//            StreamChatMessageDto leaveNotification = StreamChatMessageDto.builder()
-//                    .content(user.getUsername() + " покинул чат")
-//                    .status(StreamChatMessageStatus.LEAVE)
-//                    .senderId(userId)
-//                    .username(user.getUsername())
-//                    .timestamp(LocalDateTime.now())
-//                    .build();
-//
-//            messagingTemplate.convertAndSend("/topic/streams/" + streamId, leaveNotification);
-//        }
-//    }
-//
-//    private Long getUserIdFromPrincipal(Principal principal) {
-//        // Логика получения userId из principal
-//        return userService.findByUsername(principal.getName()).getId();
-//    }
-//
-//    private SessionInfo findSessionByUserIdAndStream(Long userId, Long streamId) {
-//        return activeSessions.values().stream()
-//                .filter(s -> s.getUserId().equals(userId) && s.getStreamId().equals(streamId))
-//                .findFirst()
-//                .orElse(null);
-//    }
-//
-//    @Data
-//    @Builder
-//    private static class SessionInfo {
-//        private String sessionId;
-//        private Long userId;
-//        private Long streamId;
-//        private LocalDateTime connectedAt;
-//    }
-
-    /**
      * Обработка отключения
      * Регистрируется через @EventListener
      */
@@ -225,9 +74,7 @@ public class ChatWebSocketController {
         SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.wrap(event.getMessage());
         Long streamId = (Long) headerAccessor.getSessionAttributes().get("streamId");
         Long userId = (Long) headerAccessor.getSessionAttributes().get("userId");
-        // Получаем причину отключения
         String closeStatus = (String) headerAccessor.getSessionAttributes().get("closeStatus");
-        log.info(closeStatus);
         if (streamId != null && userId != null) {
             // Отправляем LEAVE только при явном выходе
             if ("logout".equals(closeStatus) || "session-expired".equals(closeStatus) || "forced-logout".equals(closeStatus)) {
@@ -239,7 +86,6 @@ public class ChatWebSocketController {
             }
         }
     }
-
 
     @MessageMapping("/streams/{streamId}/join")
     public void handleJoin(
@@ -254,22 +100,17 @@ public class ChatWebSocketController {
                 .map(observer -> observer.getFirstname() + " " + observer.getLastname())
                 .filter(name -> !name.trim().isEmpty())
                 .orElse("Гость");
-        // Сохраняем в сессии
-        headerAccessor.getSessionAttributes().put("streamId", streamId);
-        headerAccessor.getSessionAttributes().put("userId", joinMessage.getUserId());
-        headerAccessor.getSessionAttributes().put("username", username);
-//        headerAccessor.getSessionAttributes().put("action", joinMessage.getAction());
-
-        StreamChatMessageDto joinNotification = StreamChatMessageDto.builder()
-                .content(" присоединился к чату")
-                .status(StreamChatMessageStatus.JOIN)
-                .senderId(joinMessage.getUserId())
-                .username(username)
-                .timestamp(LocalDateTime.now())
-                .build();
-       if ("LOGIN".equals(joinMessage.getAction())){
-           messagingTemplate.convertAndSend("/topic/streams/" + streamId, joinNotification);
-           headerAccessor.getSessionAttributes().put("action", "RECONNECT");
-       }else log.info(joinMessage.getAction() + " " + "LOGIN".equals(joinMessage.getAction()));
+            // Сохраняем в сессии
+            headerAccessor.getSessionAttributes().put("streamId", streamId);
+            headerAccessor.getSessionAttributes().put("userId", joinMessage.getUserId());
+            headerAccessor.getSessionAttributes().put("username", username);
+            StreamChatMessageDto joinNotification = StreamChatMessageDto.builder()
+                    .content(" присоединился к чату")
+                    .status(StreamChatMessageStatus.JOIN)
+                    .senderId(joinMessage.getUserId())
+                    .username(username)
+                    .timestamp(LocalDateTime.now())
+                    .build();
+            messagingTemplate.convertAndSend("/topic/streams/" + streamId, joinNotification);
     }
 }

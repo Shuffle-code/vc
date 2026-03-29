@@ -22,11 +22,11 @@ public class StreamChatMessageDto {
     private LocalDateTime timestamp;
     private StreamChatMessageStatus status = StreamChatMessageStatus.RUN;
 
-    public StreamChatMessageDto(Long id, String content, String username,StreamChatStatus streamChatStatus, LocalDateTime timestamp) {
-    }
-
-    public StreamChatMessageDto(Long id, String username, Long streamId, String content, StreamChatMessageStatus streamChatMessageStatus, LocalDateTime timestamp) {
-    }
+//    public StreamChatMessageDto(Long id, String content, String username,StreamChatStatus streamChatStatus, LocalDateTime timestamp) {
+//    }
+//
+//    public StreamChatMessageDto(Long id, String username, Long streamId, String content, StreamChatMessageStatus streamChatMessageStatus, LocalDateTime timestamp) {
+//    }
 
     //    public enum MessageType {
 //        CHAT, JOIN, LEAVE, SYSTEM

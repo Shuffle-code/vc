@@ -378,7 +378,7 @@
                             <div class="d-flex justify-content-center align-items-center bg-dark text-white"
                                  style="height: 432px;">
                                 <div>
-                                    <iframe width="576" height="432"src="http://localhost:1984/stream.html?src=cam2&mode=webrtc" ></iframe>
+                                    <iframe width="576" height="432" src="https://vk.com/video_ext.php?oid=-106879986&id=456252669&hash=5d26418cb04251ab&hd" ></iframe>
                                 </div>
                             </div>
                         </div>
@@ -578,8 +578,10 @@
         const action = document.body.dataset.action;
         // Создаем экземпляр чата
         const chat = new ChatClient(streamId);
+        const sessionKey = `chat_joined_${streamId}_${currentUserId}`;
+        // const hasJoined = sessionStorage.getItem(sessionKey) === 'true';
         // const isFirstConnection = sessionStorage.getItem('chat_join_sent') !== 'true';
-        const isFirstConnection = sessionStorage.getItem('firstConnection') !== 'false';
+        // const isFirstConnection = sessionStorage.getItem('firstConnection') !== 'false';
         // chat.isFirstConnection = isFirstConnection;
         // Находим контейнер
         const container = document.getElementById('chatMessages');
@@ -589,9 +591,16 @@
         }
         console.log('✅ Контейнер найден');
 
+
         // Обработка новых сообщений
         chat.onMessage((message) => {
-            console.log('📩 New message:', message);
+            const isJoinOrLeave = message.status === 'JOIN' || message.status === 'LEAVE';
+            const isOwnMessage = message.userId === currentUserId || message.senderId === currentUserId;
+
+            if (isJoinOrLeave && isOwnMessage) {
+                console.log('⏭️ Skipping own JOIN/LEAVE message');
+                return; // Не добавляем в чат
+            }
             // Создаем элемент сообщения
             const messageElement = createMessageElement(message, currentUserId);
             // Добавляем в контейнер
@@ -603,16 +612,22 @@
         chat.onConnectionChange((connected, error) => {
             if (connected) {
                 console.log('✅ Connected to chat!');
-                if (chat.stompClient && chat.stompClient.connected) {
+                const hasJoined = sessionStorage.getItem(sessionKey) === 'true';
+                console.log(`Session key: ${sessionKey}, hasJoined: ${hasJoined}`);
+                if (!hasJoined && chat.stompClient && chat.stompClient.connected) {
                     chat.stompClient.send(
                         `/app/streams/${streamId}/join`,
                         {},
                         JSON.stringify({
                             userId: currentUserId,
-                            action: "LOGIN",
+                            action: action,
                             timestamp: new Date().toISOString()
                         })
                     );
+                    sessionStorage.setItem(sessionKey, 'true');
+                    console.log('✅ JOIN message sent (first time in this session)');
+                } else if (hasJoined) {
+                    console.log('⏭️ Skipping JOIN message (already sent in this session)');
                 }
             } else {
                 console.log('❌ Disconnected from chat:', error);
