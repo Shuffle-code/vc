@@ -24,9 +24,9 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
                                 HttpServletResponse response,
                                 Authentication authentication)
             throws IOException{
-//        String username = authentication.getName();
-//        AccountUser accountUser = userService.findByUsername(username);
-//        chatService.userJoined(123L,accountUser.getId());
+        String username = authentication.getName();
+        AccountUser accountUser = userService.findByUsername(username);
+        chatService.userJoined(123L,accountUser.getId());
         if (!request.getHeader("referer").contains("logout")) {
             response.sendRedirect(request.getHeader("referer"));
         } else {

@@ -38,10 +38,10 @@
       <h4 th:text="${'Фамилия Имя: ' + accountUser.lastname + ' ' + accountUser.firstname}"></h4>
       <h4 th:text="${'E-mail: ' + accountUser.email}"></h4>
       <h4 th:text="${'Телефон: ' + accountUser.phone}"></h4>
-      <h4 th:text="${'Рейтинг: ' + observer.rttw}"></h4>
+<!--      <h4 th:text="${'Рейтинг: ' + observer.rttw}"></h4>-->
       <h4 th:text="${(observer.rttw == null || observer.rttw == '')}? 'Рейтинг ttw: ' : ${'Рейтинг ttw: ' + observer.rttw}"></h4>
       <p th:text="${(observer.idTtwr == null || observer.idTtwr == '')}? 'ID ttw: ' : ${'ID ttw: ' + observer.idTtwr}"></p>
-      <p th:hidden="${(observer.idTtwr != null || observer.idTtwr != '')}">Если Вы хотите, чтобы ваш любительский
+      <p th:unless="${(observer.idTtwr != null || observer.idTtwr != '')}">Если Вы хотите, чтобы ваш любительский
         рейтинг обновлялся автоматически, заполните, пожалуйста значение "ID TTW", перейдя по ссылке ниже. Данную информацию
         Вы можете найти на сайте:
         <a href="http://r.ttw.ru/players/">r.ttw.ru</a>

@@ -1,5 +1,6 @@
 package tt.chat.vc.controller;
 
+import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import tt.chat.vc.entity.SessionListener;
 import tt.chat.vc.entity.security.AccountUser;
 import tt.chat.vc.service.ObserverImageService;
 import tt.chat.vc.service.ObserverService;
+import tt.chat.vc.service.UpdateRatingTtw;
 
 import javax.imageio.ImageIO;
 import java.io.ByteArrayOutputStream;
@@ -35,6 +37,7 @@ public class ObserverController {
     private final ObserverDao observerDao;
     private final AccountUserDao accountUserDao;
     private final ObserverImageService observerImageService;
+    private final UpdateRatingTtw updateRatingTtw;
 //    @ResponseBody
     @GetMapping("/all")
     public String getObserverList(Model model, HttpSession httpSession){
@@ -84,7 +87,15 @@ public class ObserverController {
         }
         observerService.save(observer);
         uploadMultipleFiles(files, observerDao.findById(observer.getId()).get().getId());
+        if (StringUtils.isNotBlank(observer.getIdTtwr())){
+            updateRatingTtw.updateRatingAsync(observer.getIdTtwr());
+        }
                return "redirect:/observer/all";
+
+//        playerService.save(player);
+//        uploadMultipleFiles(files, playerDao.findById(player.getId()).get().getId());
+
+//        return "redirect:/player/all";
     }
     @GetMapping("/delete/{id}")
     @ResponseBody

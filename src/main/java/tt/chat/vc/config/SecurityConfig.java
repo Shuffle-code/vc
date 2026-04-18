@@ -23,7 +23,7 @@ public class SecurityConfig{
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/registration","/auth/register","/observer/image/**","/video",
                                 "/swagger-ui.html/**", "/auth/confirmation", "/observer/images/*", "/login","auth/login",
-                                "/auth/invalid-confirmation", "/video/rules")
+                                "/auth/invalid-confirmation", "/video/rules", "/observer/all")
                         .permitAll()
                         .anyRequest().authenticated()
 

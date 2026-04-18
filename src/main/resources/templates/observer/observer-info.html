@@ -39,6 +39,7 @@
       <h2 th:text="${(observer.patronymic == null)}?
       ${observer.lastname + ' ' + observer.firstname} :
       ${observer.lastname + ' ' + observer.firstname + ' ' + observer.patronymic}" class="text-decoration-underline"></h2>
+      <h5 th:text="${(observer.rttw == null || observer.rttw == '')}? '' : ${'Рейтинг ttw: ' + observer.rttw}"></h5>
       <h5 th:text="${(observer.yearOfBirth == null || observer.yearOfBirth == '')}? '' : ${'Год рождения: ' + observer.yearOfBirth}"></h5>
       <a sec:authorize="hasAuthority('observer.readOnly')"
          th:href="@{/user}" class="btn btn-primary">Личный кабинет</a>

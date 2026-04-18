@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.DOMException;
@@ -34,7 +35,7 @@ public class UpdateRatingTtw {
     public void parseRatingWithTTW() throws DOMException, XPathExpressionException, ParserConfigurationException, IOException, SAXException {
         List<String> listIdTtw = observerService.getIdTtw();
         DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document document = documentBuilder.parse("C:\\Users\\79130\\IdeaProjects\\tt_nsk\\storage\\xml\\observers.xml");
+        Document document = documentBuilder.parse("C:\\Users\\79130\\IdeaProjects\\vc\\storage\\xml\\observers.xml");
         XPath xpath = XPathFactory.newInstance().newXPath();
         for (int i = 0; i < listIdTtw.size(); i++) {
             int finalI = i;
@@ -59,11 +60,12 @@ public class UpdateRatingTtw {
         }
     }
 
-    @Scheduled(fixedDelay = 86400000) // fixedDelay = 86400000 каждые сутки, cron = " 0 * * * * MON" каждый понедельник
+//    @Scheduled(fixedDelay = 86400000) // fixedDelay = 86400000 каждые сутки, cron = " 0 * * * * MON" каждый понедельник
+    @Scheduled(cron = "0 0 1 * * MON", zone = "GMT+7")
     public void parseRating(){
         List<String> listIdTtw = observerService.getIdTtw();
         for (int i = 0; i < listIdTtw.size(); i++) {
-            String url = "http://r.ttw.ru/observers/?id=" + listIdTtw.get(i);
+            String url = "http://r.ttw.ru/players/?id=" + listIdTtw.get(i);
             try {
                 org.jsoup.nodes.Document document = Jsoup.connect(url)
                         .userAgent("Chrome")
@@ -75,28 +77,39 @@ public class UpdateRatingTtw {
                     String text = el.ownText();
                     Observer observerByRatingTtw = observerService.getObserverIdByIdTtw(listIdTtw.get(i));
                     observerService.updateRatingTtw(observerByRatingTtw, new BigDecimal(text));
+                    log.info(observerByRatingTtw.toString());
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
     }
-    public void parseRatingByClickingOnClient(String idTtw) {
-        String url = "http://r.ttw.ru/observers/?id=" + idTtw;
+    public void parseRatingByClickingOnClient(String idTtwr) {
+        String url = "http://r.ttw.ru/players/?id=" + idTtwr;
         try {
             org.jsoup.nodes.Document document = Jsoup.connect(url)
                     .userAgent("Chrome")
-                    .timeout(100000)
+                    .timeout(300000)
                     .referrer("https://google.com")
                     .get();
             Elements ratingTtw = document.getElementsByClass("header-rating");
             for (Element el : ratingTtw) {
                 String text = el.ownText();
-                Observer observerByRatingTtw = observerService.getObserverIdByIdTtw(idTtw);
+                Observer observerByRatingTtw = observerService.getObserverIdByIdTtw(idTtwr);
                 observerService.updateRatingTtw(observerByRatingTtw, new BigDecimal(text));
+                log.info(observerByRatingTtw.toString());
             }
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
     }
+    @Async
+    public void updateRatingAsync(String idTtwr) {
+        try {
+            parseRatingByClickingOnClient(idTtwr);
+        } catch (Exception e) {
+            log.error("Ошибка при обновлении рейтинга: {}", e.getMessage());
+        }
+    }
+
 }
