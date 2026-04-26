@@ -46,8 +46,8 @@ public class SystemMessageScheduler {
 //                    .content(getRandomMessage())
 //                    .timestamp(LocalDateTime.now())
 //                    .build();
-            log.info(systemMessageDto.getContent() + " " + systemMessageDto.getStatus());
-            log.info(destination);
+//            log.info(systemMessageDto.getContent() + " " + systemMessageDto.getStatus());
+//            log.info(destination);
             messagingTemplate.convertAndSend(destination, systemMessageDto);
         }
     }

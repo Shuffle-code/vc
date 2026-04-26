@@ -46,7 +46,7 @@ public class ChatService {
     // Константы ограничений
     private static final int MAX_MESSAGE_LENGTH = 500;
     private static final int MESSAGE_RATE_LIMIT = 5; // сообщений в секунду
-    private static final int MESSAGE_HISTORY_LIMIT = 40;
+    private static final int MESSAGE_HISTORY_LIMIT = 50;
 
 
     public List<Message> getRecentMessages() {
@@ -69,11 +69,6 @@ public class ChatService {
     public List<StreamChatMessage> getRecentStreamChatMessages(Long streamId) {
         return streamChatMessageDao.findLast10MessagesByStreamId(streamId);
     }
-
-//    public List<Message> getAllMessages() {
-//        return messageDao.findAllOrderByTimestamp();
-//    }
-
     public List<Message> getAllMessages() {
         return messageDao.findAll();
     }

@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS ROLE_AUTHORITY(
 
     CONSTRAINT fk_role_authority_account_role
         FOREIGN KEY (ROLE_ID)
-            REFERENCES ACCOUNT_USER (ID),
+            REFERENCES ACCOUNT_ROLE (ID),
 
     CONSTRAINT fk_role_authority_authority
         FOREIGN KEY (AUTHORITY_ID )

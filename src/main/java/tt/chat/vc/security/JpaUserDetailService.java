@@ -39,13 +39,11 @@ public class JpaUserDetailService implements UserDetailsService, UserService {
     private final String imageName = "image104-66.jpg";
     private final AccountUserDao accountUserDao;
     private final AccountRoleDao accountRoleDao;
-//    private final UserMapper userMapper;
     public final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final ConfirmationCodeDao confirmationCodeDao;
     private final ObserverImageDao observerImageDao;
     private final ObserverService observerService;
-//    private final ParticipantMapper participantMapper;
 
     @Override
     @Transactional
@@ -161,11 +159,6 @@ public class JpaUserDetailService implements UserDetailsService, UserService {
         return accountUserDao.save(accountUser);
     }
 
-//    @Override
-//    public UserDto findById(Long id) {
-//        return null;
-//    }
-
     @Override
     public List<UserDto> findAll() {
         return null;
@@ -179,20 +172,12 @@ public class JpaUserDetailService implements UserDetailsService, UserService {
                 .build();
         confirmationCodeDao.save(confirmationCode);
     }
-//            userMapper.toAccountUser(thisUser)
     @Override
     @Transactional(readOnly = true)
     public UserDto findById(Long id) {
         return modelMapper.map(accountUserDao.findById(id).orElse(null), UserDto.class);
-//        return userMapper.toUserDto(accountUserDao.findById(id).orElse(null));
     }
 
-//    @Override
-//    public List<UserDto> findAll() {
-//        return accountUserDao.findAll().stream()
-//                .map(userMapper::toUserDto)
-//                .collect(Collectors.toList());
-//    }
 
     @Override
     @Transactional

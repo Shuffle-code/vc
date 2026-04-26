@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 //import tt.chat.vc.entity.OnlineUser;
 import tt.chat.vc.entity.SessionListener;
 import tt.chat.vc.entity.security.AccountUser;
-import tt.chat.vc.service.ChatService;
-import tt.chat.vc.service.ObserverImageService;
-import tt.chat.vc.service.ObserverService;
-import tt.chat.vc.service.UserService;
+import tt.chat.vc.service.*;
 //import tt.chat.vc.service.OnlineUsersService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,12 +30,11 @@ import java.util.stream.Collectors;
 public class VideoController {
     private final UserService userService;
     private final ChatService chatService;
-    private final ObserverImageService observerImageService;
-//    private static final DateTimeFormatter formatter =
-//            DateTimeFormatter.ofPattern("HH:mm:ss");
+    private final TourImageService tourImageService;
+    private final TourService tourService;
     private final LocalDate currentDate = LocalDate.now();
-    private static final Long STREAM_ID = 123L;
-    private static final Long ADMIN_ID = 5L;
+    private static final Long STREAM_ID = 1L;
+    private static final Long ADMIN_ID = 2L;
 
     @GetMapping
     public String video(Model model, HttpSession httpSession, Principal principal) {
@@ -47,14 +43,16 @@ public class VideoController {
                 .map(username -> userService.findByUsername(username))
                 .map(AccountUser::getId)
                 .orElse(-1L);
+        Long currentTourId = tourService.getCurrentTourByStatus().getId();
         httpSession.setAttribute("countObservers", SessionListener.getActiveSessions());
         httpSession.setAttribute("data", currentDate);
 //        httpSession.setAttribute("onlineCount", SessionListener.getAuthenticatedUserCount());
         model.addAttribute("onlineCount", SessionListener.getAuthenticatedUserCount());
         model.addAttribute( "currentUserId", currentUserId);
         model.addAttribute( "streamId", STREAM_ID);
+        model.addAttribute("tours", tourService.findAll());
         model.addAttribute("messages", chatService.getRecentStreamChatMessages(STREAM_ID));
-        List<Long> imagesId = new ArrayList<>(observerImageService.uploadMultipleFiles(ADMIN_ID));
+        List<Long> imagesId = new ArrayList<>(tourImageService.uploadMultipleFiles(currentTourId));
         model.addAttribute("images", imagesId);
         return "video/video";
     }

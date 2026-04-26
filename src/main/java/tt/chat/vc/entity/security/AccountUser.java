@@ -26,19 +26,15 @@ import java.util.stream.Collectors;
 @Table(name = "ACCOUNT_USER")
 @EntityListeners(AuditingEntityListener.class)
     public class AccountUser extends InfoEntity implements UserDetails {
-
     private String username;
     @JsonIgnore
     private String password;
-
     private String firstname;
     private String lastname;
-
     @OneToOne(targetEntity = Observer.class, fetch = FetchType.EAGER)
     @JsonIgnore
     @JoinColumn(name = "observer_id", referencedColumnName = "ID")
     private Observer observer;
-
     @Singular
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JsonIgnore
@@ -46,14 +42,11 @@ import java.util.stream.Collectors;
             joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
             inverseJoinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")})
     private Set<AccountRole> roles;
-
 //    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "accountUser")
 //    @JsonIgnore
 //    private List<Message> messages;
-
     @Transient
     private Set<Authority> authorities;
-
     @Builder.Default
     private boolean accountNonExpired = false;
     @Builder.Default

@@ -1,4 +1,11 @@
 spring:
+  thymeleaf:
+    encoding: UTF-8
+    mode: HTML
+  logging:
+    charset:
+      console: UTF-8
+      file: UTF-8
   mail:
     host: "smtp.gmail.com"
     port: 587
@@ -10,7 +17,6 @@ spring:
           auth: true
           starttls:
             enable: true
-
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -18,32 +24,25 @@ spring:
     show-sql: false
     hibernate:
       ddl-auto: none
-    #      use-new-id-generator-mappings: true
     properties:
       hibernate:
         format_sql: true
     generate-ddl: false
-#    jdbc:
-#      batch_versioned_data: false
-
   liquibase:
     change-log: "db/changelog/db.changelog-master.xml"
     enabled: true
   datasource:
-#    url: "jdbc:postgresql://localhost:5432/ttvc"
-#    #        ?createDatabaseIfNotExist=true
-#    username: "shuffle"
-#    password: "shuffle"
-
     url: "jdbc:postgresql://localhost:5439/ttvc"
-    #        ?createDatabaseIfNotExist=true
     username: "shuffle"
     password: "shuffle"
 
-storage:
-  location: './storage'
 
 server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
   port: 1975
   ssl:
     enabled: true
@@ -52,20 +51,34 @@ server:
     key-store-password: "shuffle"
     key-alias: "tomcat"
 
+storage:
+  location: './storage'
 
-#server:
-#  port: 1975
-
-#Для JWT аутентификации:
-
-#  springdoc:
-#    show-login-endpoint: false
-#    swagger-ui:
-#      oauth:
-#        client-id: my-client-id
-#        client-secret: my-client-secret
-#        use-pkce: true
-
-#  настройка контролирует отображение стандартных эндпоинтов аутентификации (например, /login) в Swagger UI документации.
 springdoc:
   show-login-endpoint: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/ttvc"
+    username: "shuffle"
+    password: "rfvby"
+
+storage:
+  location: '/home/shuffle/java/storage'
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: "jdbc:postgresql://localhost:5439/ttvc"
+    username: "shuffle"
+    password: "shuffle"
+
+storage:
+  location: './storage'

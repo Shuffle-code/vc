@@ -131,7 +131,7 @@ public class ObserverController {
 
     @GetMapping(value = "/image/{id}", produces = MediaType.IMAGE_PNG_VALUE)
     @ResponseBody
-    @PreAuthorize("hasAnyAuthority('observer.read') || isAnonymous()")
+    @PreAuthorize("hasAnyAuthority('observer.creade') || isAnonymous() || hasAnyAuthority('observer.read')")
     public byte[] getImage(@PathVariable Long id) {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             ImageIO.write(observerImageService.loadFileAsImage(id), "png", byteArrayOutputStream);

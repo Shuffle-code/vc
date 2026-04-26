@@ -7,4 +7,5 @@ import tt.chat.vc.entity.StreamChat;
 
 @Repository
 public interface StreamChatDao extends JpaRepository<StreamChat, Long> {
+    boolean existsByTournamentId(Long tournamentId);
 }

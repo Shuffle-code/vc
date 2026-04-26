@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/html" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Список турниров</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+
+
+<div th:replace="~{common/navbar :: navi(TourInfo)}"></div>
+
+<div class="d-flex justify-content-center">
+    <span th:if="${tours.size() == 0}">Турниров нет</span>
+    <div th:unless="${tours.size() == 0}">
+        <div class="p-1 text-center bg-light">
+            <h2>Турниры</h2>
+        </div>
+        <div class="input-group">
+            <input type="search" class="form-control rounded" placeholder="Введите дату турнира" aria-label="Search" aria-describedby="search-addon" />
+            <button type="button" class="btn btn-primary">Поиск</button>
+        </div>
+    <div>
+        <table class="table table-striped table-hover">
+            <thead class="bg-light">
+            <tr>
+                <th scope="col">№</th>
+                <th scope="col">Дата</th>
+                <th scope="col">Название</th>
+                <th scope="col">Адрес</th>
+                <th colspan="2" scope="col">Кол-во игроков</th>
+<!--                <th scope="col">Победитель</th>-->
+                <th scope="col" sec:authorize="hasAuthority('observer.update')">Редактировать</th>
+                <th scope="col" sec:authorize="hasAuthority('observer.read') || isAnonymous()">Просмотреть</th>
+                <th scope="col" sec:authorize="hasAuthority('observer.delete')">Удалить</th>
+            </tr>
+            </thead>
+            <tbody data-mdb-spy="scroll">
+            <tr th:each="tour, i : ${tours}">
+<!--                th:hidden="${tour.status.name() == 'UPCOMING'}">-->
+                <th scope="row" th:text="${i.count}"></th>
+                <td th:text="${tour.date}"></td>
+                <td th:text="${tour.title}"></td>
+                <td th:text="${tour.address.getStreet + ', ' + #numbers.formatDecimal(tour.address.house, 1, 0)}"></td>
+                <td th:text="${(tour.amountPlayers == null)}? '0' : ${tour.amountPlayers}" class="text-end"></td>
+                <td>
+                    <div >
+                        <img th:src="@{'/tour/image/' + ${tour.id}}" alt="" width="40px" height="40" class="rounded-circle" />
+                    </div>
+                </td>
+<!--                <td th:text="${(tour.observer == null)}? '' : ${tour.observer.getFirstname + ' ' + tour.observer.getLastname}"></td>-->
+                <td sec:authorize="hasAuthority('observer.update')">
+                    <a type="button"  th:href="@{/tour/new(id=${tour.id})}" class="btn btn-warning">Редактировать</a>
+                </td>
+                <td sec:authorize="hasAuthority('observer.read') || isAnonymous()">
+                    <a type="button" th:href="@{'/tour/' + ${tour.id}}" class="btn btn-warning">Просмотреть</a>
+                </td>
+                <td sec:authorize="hasAuthority('observer.delete')">
+                    <a type="button"  th:href="@{${'/tour/delete/' + tour.id}}" class="btn btn-danger">Удалить</a>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td scope="col">№</td>
+                <td scope="col">Дата</td>
+                <td scope="col">Название</td>
+                <td scope="col">Адрес</td>
+                <td colspan="2" scope="col">Кол-во игроков</td>
+<!--                <td scope="col">Победитель</td>-->
+                <td scope="col" sec:authorize="hasAuthority('observer.update')">Редактировать</th>
+                <td scope="col" sec:authorize="hasAuthority('observer.read') || isAnonymous()">Просмотреть</td>
+                <td scope="col" sec:authorize="hasAuthority('observer.delete')">Удалить</td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+        <foot>
+            <br>
+            <br>
+        </foot>
+    </div>
+</div>
+<div th:replace="~{common/footer :: footerBlock}"/>
+
+</body>
+</html>

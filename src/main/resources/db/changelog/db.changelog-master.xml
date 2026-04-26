@@ -10,6 +10,8 @@
     <include
             file="/db/changelog/createTables/create-table-account_role.xml"/>
     <include
+            file="db/changelog/createTables/create-table-address.xml"/>
+    <include
             file="/db/changelog/createTables/create-table-user.xml"/>
     <include
             file="/db/changelog/createTables/create-table-authority.xml"/>
@@ -18,9 +20,13 @@
     <include
             file="/db/changelog/createTables/create-table-observer.xml"/>
     <include
+            file="/db/changelog/createTables/create-table-user_role.xml"/>
+    <include
             file="/db/changelog/createTables/create-table-role_authority.xml"/>
     <include
-            file="/db/changelog/createTables/create-table-user_role.xml"/>
+            file="db/changelog/createTables/create-table-tournament.xml"/>
+    <include
+            file="db/changelog/createTables/create-table-tour_image.xml"/>
     <include
             file="/db/changelog/createTables/create-table-observer_image.xml"/>
     <include
@@ -31,6 +37,7 @@
             file="/db/changelog/createTables/create-table-massage.xml"/>
     <include
             file="/db/changelog/createTables/create-table-chat_room.xml"/>
+
 
 
 <!--     =====> изменение таблиц <===== -->
@@ -55,5 +62,7 @@
             file="db/changelog/fillTables/fill-table-role_authority.xml"/>
     <include
             file="db/changelog/fillTables/fill-table-observer_image.xml"/>
+    <include
+            file="db/changelog/fillTables/fill-table-address_prod.xml"/>
 
 </databaseChangeLog> 

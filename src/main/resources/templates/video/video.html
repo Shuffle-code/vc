@@ -8,62 +8,63 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<!--    <link rel="stylesheet" th:href="@{/css/modal-fix.css}">-->
     <style>
-        .modal-open footer.fixed-bottom {
-            padding-right: 0 !important;
-        }
-        /* Основные фиксы для Chrome */
         body.modal-open {
-            overflow: auto;
+            overflow: auto !important;
             padding-right: 0 !important;
+            position: static !important;
         }
-
-        .modal:not(footer) {
-            text-align: center !important;
-            padding-left: 0 !important;
-            padding-right: 0 !important;
+        .modal {
+            overflow-y: auto !important;
         }
-
-        .modal-dialog {
-            display: inline-block !important;
-            margin: 0 auto !important;
-            width: auto !important;
-            max-width: 95% !important;
-            text-align: left !important;
+        .modal-open .modal {
+            overflow-x: hidden;
+            overflow-y: auto !important;
         }
-
-        /*.modal-xl {*/
-        /*    max-width: 95% !important;*/
-        /*}*/
-
-        /*@media (min-width: 1200px) {*/
-        /*    .modal-xl {*/
-        /*        max-width: 1140px !important;*/
-        /*    }*/
-        /*}*/
-
-        .modal-content {
-            background: white !important;
-            border-radius: 8px !important;
-            margin: 0 auto !important;
+        .modal.show {
+            background-color: rgba(0,0,0,0.5);
         }
-
-        .modal-body {
-            background: white !important;
-            text-align: center !important;
+        .modal {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            margin: 0 !important;
             padding: 0 !important;
         }
-
-        .modal-body img {
-            display: block !important;
-            max-width: 100% !important;
-            height: auto !important;
+        .modal-dialog {
+            position: relative !important;
+            margin: 1.75rem auto !important;
+            transform: none !important;
+        }
+        .modal-content {
+            transform: none !important;
             margin: 0 auto !important;
         }
-
-        /*.modal-backdrop {*/
-        /*    background-color: rgba(0, 0, 0, 0.5) !important;*/
-        /*}*/
+        .modal-header,
+        .modal-body {
+            transform: none !important;
+            position: relative !important;
+        }
+        @media (max-width: 768px) {
+            .modal-dialog {
+                margin: 0.5rem !important;
+                width: calc(100% - 1rem) !important;
+                max-width: none !important;
+            }
+            .modal-content {
+                min-height: auto !important;
+            }
+        }
+        .btn-outline-warning a {
+            color: #ffc107 !important;
+            text-decoration: none;
+        }
+        .btn-outline-warning:hover a {
+            color: #0d6efd !important;
+        }
         .message {
             padding: 0.5rem 0.75rem;
             margin-bottom: 0.5rem;
@@ -122,7 +123,7 @@
     </style>
 </head>
 <body th:attr="data-current-user-id=${currentUserId}, data-stream-id=${streamId}">
-<div th:replace="~{common/navbar :: navi(ObserverInfo)}"></div>
+<div th:replace="~{common/navbar :: navi(VIDEO)}"></div>
 <div class="container-fluid pt-3 pb-5">
     <!-- Основной контент -->
     <div class="row g-3">
@@ -136,7 +137,7 @@
                             <span class="fw-bold">Камера 1</span>
                             <div class="form-check form-switch mb-0">
                                 <input class="form-check-input" type="checkbox" id="camera1Toggle" checked>
-                                <label class="form-check-label" for="camera1Toggle">Активна</label>
+                                <label class="form-check-label" for="camera1Toggle">Звук</label>
                             </div>
                         </div>
                         <div class="card-body p-0 video-container overflow-hidden">
@@ -157,7 +158,7 @@
                             <span class="fw-bold">Камера 2</span>
                             <div class="form-check form-switch mb-0">
                                 <input class="form-check-input" type="checkbox" id="camera2Toggle" checked>
-                                <label class="form-check-label" for="camera2Toggle">Активна</label>
+                                <label class="form-check-label" for="camera2Toggle">Звук</label>
                             </div>
                         </div>
                         <div class="card-body p-0 video-container overflow-hidden">
@@ -175,32 +176,32 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header py-2">
-                            <h6 class="mb-0">Данные трансляции</h6>
+                            <h6 class="mb-0 fw-semibold">Активные трансляции</h6>
                         </div>
                         <div class="card-body">
                             <div class="row g-3">
-                                <div class="col-md-4">
-                                    <label class="form-label">Колличество игроков</label>
-                                    <select class="form-select">
-                                        <option>Высокое (1080p)</option>
-                                        <option>Среднее (720p)</option>
-                                        <option>Низкое (480p)</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Адрес</label>
-                                    <select class="form-select">
-                                        <option>30 fps</option>
-                                        <option>25 fps</option>
-                                        <option>15 fps</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Аудио</label>
-                                    <select class="form-select">
-                                        <option>Включено</option>
-                                        <option>Выключено</option>
-                                    </select>
+                                <div class="justify-content-center">
+                                    <span th:if="${tours.size() == 0}">Трансляций нет</span>
+                                    <div th:unless="${tours.size() == 0}">
+                                        <div class="w-100">
+                                            <table class="table table-striped table-hover w-100">
+                                                <thead class="bg-light">
+                                                    <th scope="col" class="fw-medium"></th>
+                                                    <th scope="col" class="fw-medium">Адрес</th>
+                                                    <th scope="col" class="fw-medium text-center">Кол-во игроков</th>
+                                                </thead>
+                                                <tbody data-mdb-spy="scroll">
+                                                <tr th:each="tour, i : ${tours}">
+                                                    <td th:text="${tour.title}"></td>
+                                                    <td th:text="${tour.address.getStreet + ', ' + #numbers.formatDecimal(tour.address.house, 1, 0)}"></td>
+                                                    <td th:text="${(tour.amountPlayers == null)}? '0' : ${tour.amountPlayers}" class="text-center"></td>
+                                                </tr>
+                                                </tbody>
+                                                <tfoot>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="d-flex gap-2">
@@ -209,12 +210,14 @@
                                                 <i class="bi bi-chat-left-text me-1"></i> Участники трансляции
                                             </a>
                                         </button>
-                                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal" >
+                                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                             <i class="bi bi-database-check me-1"></i>Турнирная таблица
                                         </button>
 
-                                        <button class="btn btn-outline-danger">
-                                            <i class="bi bi-arrow-repeat me-1"></i>Запросить актуальные данные
+                                        <button class="btn btn-outline-warning">
+                                            <a th:href="@{/tour/all}" class="text-decoration-none">
+                                            <i class="bi bi-arrow-repeat me-1"></i>Расписание турниров
+                                            </a>
                                         </button>
                                         <!-- Модальное окно -->
                                         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -225,7 +228,7 @@
                                                     </div>
                                                     <div class="modal-body">
                                                         <div th:each="imgId : ${images}" class="d-flex container mb-3">
-                                                            <img th:src="@{'/observer/images/' + ${imgId}}" class="img-fluid" alt="Результат">
+                                                            <img th:src="@{'/tour/images/' + ${imgId}}" class="img-fluid" alt="Результат">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -293,6 +296,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js" integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="/script/chatClient.js"></script>
+<!--<script src="/script/modal-fix.js"></script>-->
 <script>
     // Функция для создания элемента сообщения
     function createMessageElement(message, currentUserId) {
