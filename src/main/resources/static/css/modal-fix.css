@@ -1,0 +1,12 @@
+body.modal-open {
+    padding-right: 0 !important;
+}
+
+.modal {
+    right: 0 !important;
+    padding: 0 !important;
+}
+
+body.modal-open footer {
+    padding-right: 0 !important;
+}
