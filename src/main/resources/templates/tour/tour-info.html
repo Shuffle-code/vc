@@ -55,14 +55,15 @@
 <!--      </tr>-->
 <!--      </tbody>-->
 <!--    </table>-->
-  <h3 th:text="${'Дата: ' + tour.date}"></h3>
-  <h4 th:text="${'Название: ' + tour.title}"></h4>
-  <h4 th:text="${'Адрес: ' + tour.address.getStreet}"></h4>
-  <h4 th:text="${(tour.amountPlayers == null)}? 'Колличество игроков: 0' : ${'Колличество игроков: ' + tour.amountPlayers}"></h4>
+    <h3 th:text="${'Дата: ' + tour.date}"></h3>
+    <h4 th:text="${'Время: ' + tour.timeTour}"></h4>
+    <h4 th:text="${'Название: ' + tour.title}"></h4>
+    <h4 th:text="${'Адрес: ' + tour.address.getStreet}"></h4>
+    <h4 th:text="${(tour.amountPlayers == null)}? 'Колличество игроков: 0' : ${'Колличество игроков: ' + tour.amountPlayers}"></h4>
 <!--  <h4 th:text="${(tour.observer == null)}? 'Победитель будет известен: ' + ${tour.date} : ${'Победитель: ' + tour.observer.getFirstname + ' ' + tour.observer.getLastname}"></h4>-->
 <!--  <p th:text="${'Статус: ' + tour.status.title}"></p>-->
     <p th:text="${(tour.info == null || tour.info == '')}? '' : ${tour.info}"></p>
-    <a sec:authorize="hasAuthority('observer.readOnly')"
+    <a sec:authorize="hasAuthority('observer.read')"
        th:href="@{/observer/all}" class="btn btn-primary">Перейти куда-нибудь</a>
     <a sec:authorize="hasAuthority('observer.update')"
        th:href="@{/tour/new(id=${tour.id})}" class="btn btn-primary">Изменить данные турнира</a>

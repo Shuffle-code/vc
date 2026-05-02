@@ -70,9 +70,13 @@ public class TourService {
                     .tour(tour)
                     .build();
             tour.addImage(tourImage);
+            log.info(tourImage.getPath());
+            tourImageService.deleteStartImage(tourImage);
+        }
+        else if (tourImageService.getAllIdImagesByTourId(tour.getId()).isEmpty()){
+            tourImageService.addStartImage(tour);
         }
         Tour savedTour = tourDao.save(tour);
-
         if (!streamChatDao.existsByTournamentId(savedTour.getId())) {
             StreamChat streamChat = StreamChat.builder()
                     .title(savedTour.getTitle())
@@ -81,7 +85,7 @@ public class TourService {
                     .build();
             streamChatDao.save(streamChat);
         }
-        return tour;
+        return savedTour;
     }
 
     @Transactional
@@ -102,20 +106,6 @@ public class TourService {
             log.error(e.getMessage());
         }
     }
-
-//    public List<PlayerTournament> findAllByTourId(Long tourId) {
-//        return playerTournamentRepo.findAllByTournamentIdOrderByPlayerId(tourId);
-//    }
-
-//    public List<Player> getListPlayersForFutureTour(List<PlayerTournament> playerTournamentList) {
-//        List<Player> playerListForFutureTour = new ArrayList<>();
-//        for (PlayerTournament p : playerTournamentList) {
-//            playerListForFutureTour.add(playerService.findById(p.getPlayerId()));
-//        }
-//        playerListForFutureTour.sort(Comparator.comparing(Player::getRating).reversed());
-//        return playerListForFutureTour;
-//    }
-
     public List<Tour> findAll(int page, int size) {
         return tourDao.findAllByStatus(Status.ACTIVE, PageRequest.of(page, size));
     }
@@ -184,8 +174,18 @@ public class TourService {
     public Tour getCurrentTour(){
         return tourDao.findFirstByDateAfter(now);
     }
-    public Tour getCurrentTourByStatus(){
-        return tourDao.findTourByStatus(TourStatus.ACTIVE);
+    public List<Tour> getCurrentTourByStatusActive(){
+        return tourDao.findToursByStatus(TourStatus.ACTIVE);
+    }
+    public Tour findFirstByStatus(){
+        return tourDao.findFirstByStatus(TourStatus.ACTIVE).orElse(null);
+    }
+    public Long getIdByTournamentId(Long tourId){
+        return streamChatDao.findStreamChatByTournamentId(tourId).getId();
+    }
+
+    public StreamChat findStreamByTourId(Long tourId){
+        return streamChatDao.findStreamChatByTournamentId(tourId);
     }
 }
 

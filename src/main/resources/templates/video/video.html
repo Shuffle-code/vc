@@ -138,17 +138,22 @@
                                     <span th:if="${tours.size() == 0}">Трансляций нет</span>
                                     <div th:unless="${tours.size() == 0}">
                                         <div class="w-100">
-                                            <table class="table table-striped table-hover w-100">
+                                            <table class="table table-striped table-hover w-100 table" >
                                                 <thead class="bg-light">
                                                     <th scope="col" class="fw-medium"></th>
                                                     <th scope="col" class="fw-medium">Адрес</th>
                                                     <th scope="col" class="fw-medium text-center">Кол-во игроков</th>
+                                                    <th scope="col" sec:authorize="hasAuthority('observer.read')">Перейти</th>
                                                 </thead>
                                                 <tbody data-mdb-spy="scroll">
                                                 <tr th:each="tour, i : ${tours}">
                                                     <td th:text="${tour.title}"></td>
                                                     <td th:text="${tour.address.getStreet + ', ' + #numbers.formatDecimal(tour.address.house, 1, 0)}"></td>
                                                     <td th:text="${(tour.amountPlayers == null)}? '0' : ${tour.amountPlayers}" class="text-center"></td>
+                                                    <td sec:authorize="hasAuthority('observer.read')">
+                                                        <a type="button" th:href="@{'/video/' + ${tour.id}}" class="btn btn-outline-secondary"
+                                                           th:if="${tour.id != tourId}">Перейти</a>
+                                                    </td>
                                                 </tr>
                                                 </tbody>
                                                 <tfoot>
@@ -214,7 +219,7 @@
                     <!-- Сообщения чата -->
                     <div class="chat-messages d-flex flex-column p-3"
                          th:attr="data-current-user-id=${currentUserId}, data-stream-id=${streamId}"
-                         style="height: 700px; border: 1px solid #dee2e6; padding: 1rem; background-color: #f8f9fa; overflow-y: auto;"
+                         style="height: 750px; border: 1px solid #dee2e6; padding: 1rem; background-color: #f8f9fa; overflow-y: auto;"
                          id="chatMessages">
                         <!-- Системное сообщение -->
                         <div class="message system-message">

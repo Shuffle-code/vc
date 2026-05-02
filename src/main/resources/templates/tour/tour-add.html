@@ -23,6 +23,17 @@
                 <span class="input-group-text">Дата</span>
                 <input type="text" class="form-control" aria-label="Sizing example input" placeholder="ГГГГ-ММ-ДД"
                        aria-describedby="inputGroup-sizing-default" th:field="*{date}">
+                <div th:errors="*{date}" class="invalid-feedback"></div>
+            </div>
+        </div>
+        <div class="form-outline">
+            <div class="input-group mb-2">
+                <span class="input-group-text">Время</span>
+                <input type="text"
+                       class="form-control"
+                       th:field="*{timeTour}"
+                       th:errorclass="is-invalid">
+                <div th:errors="*{timeTour}" class="invalid-feedback"></div>
             </div>
         </div>
         <div class="form-outline">
@@ -42,12 +53,14 @@
                         th:value="${address.id}"
                         th:text="${address.city + ' ' + address.street}"></option>
             </select>
+            <div th:errors="*{address}" class="invalid-feedback"></div>
         </div>
         <div class="form-outline">
             <div class="input-group mb-2">
                 <span class="input-group-text" id="amountPlayers">Кол-во игроков</span>
                 <input type="text" class="form-control" aria-label="Sizing example input"
                        aria-describedby="inputGroup-sizing-default" th:field="*{amountPlayers}">
+                <div th:errors="*{amountPlayers}" class="invalid-feedback"></div>
             </div>
         </div>
         <div class="form-outline">

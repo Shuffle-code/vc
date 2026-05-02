@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS tournament (
                                           ID BIGSERIAL NOT NULL PRIMARY KEY,
                                           title VARCHAR(255) NOT NULL,
     date DATE NOT NULL,
+    time_tour VARCHAR(255) NOT NULL,
     address_id BIGINT NOT NULL,
     amount_players BIGINT NOT NULL,
     VERSION INT DEFAULT 0 NOT NULL,

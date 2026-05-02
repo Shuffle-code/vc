@@ -27,4 +27,16 @@ public class TourImage extends BaseEntity {
         this.tour = tour;
         this.path = path;
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TourImage)) return false;
+        TourImage that = (TourImage) o;
+        return path.equals(that.path);
+    }
+    @Override
+    public int hashCode() {
+        return path.hashCode();
+    }
+
 }

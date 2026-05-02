@@ -25,6 +25,22 @@ public class StreamChatMessage extends BaseEntity {
     @JoinColumn(name = "stream_id")
     private StreamChat streamChat;
 
+    // Добавляем поле для автоматического удаления
+    @Column(name = "expires_at")
+    private LocalDateTime expiresAt;
+
+    // Автоматически устанавливаем expires_at при создании
+    @PrePersist
+    protected void onCreate() {
+        if (timestamp == null) {
+            timestamp = LocalDateTime.now();
+        }
+        // Сообщение будет жить 30 дней
+        if (expiresAt == null) {
+            expiresAt = timestamp.plusDays(30);
+        }
+    }
+
     @ManyToOne
     @JoinColumn(name = "sender_id")
     @JsonIgnore

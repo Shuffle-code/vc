@@ -9,8 +9,8 @@ spring:
   mail:
     host: "smtp.gmail.com"
     port: 587
-    username: "shuffle2149@gmail.com"
-    password: "frqwptlnpssetliw"
+    username: ${MAIL:shuffle2149@gmail.com}
+    password: ${MAIL_PASSWORD:frqwptlnpssetliw}
     properties:
       mail:
         smtp:
@@ -33,8 +33,8 @@ spring:
     enabled: true
   datasource:
     url: "jdbc:postgresql://localhost:5439/ttvc"
-    username: "shuffle"
-    password: "shuffle"
+    username: ${DB_USERNAME:shuffle}
+    password: ${DB_PASSWORD:shuffle}
 
 
 server:
@@ -48,11 +48,11 @@ server:
     enabled: true
     key-store-type: "PKCS12"
     key-store: "classpath:keystore.p12"
-    key-store-password: "shuffle"
+    key-store-password: ${KEYSTORE_PASSWORD:shuffle}
     key-alias: "tomcat"
 
 storage:
-  location: './storage'
+  location: ${STORAGE_LOCATION:./storage}
 
 springdoc:
   show-login-endpoint: true
@@ -64,11 +64,17 @@ spring:
       on-profile: prod
   datasource:
     url: "jdbc:postgresql://localhost:5432/ttvc"
-    username: "shuffle"
-    password: "rfvby"
+    username:  ${PROD_DB_USERNAME:shuffle}
+    password:  ${PROD_DB_PASSWORD:rfvby}
+  ssl:
+    enabled: true
+    key-store-type: "PKCS12"
+    key-store: "classpath:keystore.p12"
+    key-store-password: ${KEYSTORE_PASSWORD:shuffle}
+    key-alias: "tomcat"
+  storage:
+    location: '/home/shuffle/java/storage'
 
-storage:
-  location: '/home/shuffle/java/storage'
 
 ---
 spring:
@@ -77,8 +83,13 @@ spring:
       on-profile: dev
   datasource:
     url: "jdbc:postgresql://localhost:5439/ttvc"
-    username: "shuffle"
-    password: "shuffle"
-
-storage:
-  location: './storage'
+    username: ${PROD_DB_USERNAME:shuffle}
+    password: ${DEV_DB_PASSWORD:shuffle}
+  ssl:
+    enabled: true
+    key-store-type: "PKCS12"
+    key-store: "classpath:keystore.p12"
+    key-store-password: ${KEYSTORE_PASSWORD:shuffle}
+    key-alias: "tomcat"
+  storage:
+    location: ${STORAGE_LOCATION:./storage}

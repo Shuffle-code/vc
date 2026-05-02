@@ -2,10 +2,12 @@ package tt.chat.vc.dao;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import tt.chat.vc.entity.StreamChatMessage;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,7 +39,12 @@ public interface StreamChatMessageDao extends JpaRepository<StreamChatMessage, L
             "ORDER BY time_stamp ASC", nativeQuery = true)
     List<StreamChatMessage> findLast10MessagesByStreamId(@Param("streamId") Long streamId);
 
-//
+    // Удаляем сообщения у которых expires_at меньше текущего времени
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM StreamChatMessage m WHERE m.expiresAt < :now")
+    int deleteExpiredMessages(@Param("now") LocalDateTime now);
+
 @Query("SELECT COUNT(scm) FROM StreamChatMessage scm " +
         "WHERE scm.observer.id = :senderId " +
         "AND scm.streamChat.id = :streamId " +

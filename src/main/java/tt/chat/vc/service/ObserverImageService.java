@@ -108,9 +108,9 @@ public class ObserverImageService {
                     .observer(observer)
                     .build();
             observer.addImage(observerImage);
-            Observer savePlayer = observerDao.save(observer);
+            Observer saveObserver = observerDao.save(observer);
             deleteStartImage(observerImage);
-            return savePlayer;
+            return saveObserver;
         }
         return null;
     }
@@ -119,7 +119,6 @@ public class ObserverImageService {
         Long idObserver = observerImage.getObserver().getId();
         ObserverImage image = observerImageDao.findFirstByObserverId(idObserver);
         if (observerImageDao.count(observerImage.getObserver().getId()) > 1 && image.getPath().equals("image104-66.jpg")){
-//            log.info(image.getPath());
             observerImageDao.delete(image);
         }
     }

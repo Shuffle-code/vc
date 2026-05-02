@@ -5,6 +5,9 @@ CREATE TABLE IF NOT EXISTS stream_chat_message (
     content varchar (1000) NULL,
     STATUS varchar(30) DEFAULT NULL,
     time_stamp timestamp DEFAULT NULL,
+    expires_at TIMESTAMP DEFAULT NULL,
     CONSTRAINT FK_stream_chat_message_stream_chat FOREIGN KEY (stream_id) REFERENCES stream_chat (id),
     CONSTRAINT FK_stream_chat_message_account_user FOREIGN KEY (sender_id) REFERENCES account_user (id)
     );
+
+CREATE INDEX idx_stream_chat_message_expires_at ON stream_chat_message(expires_at);

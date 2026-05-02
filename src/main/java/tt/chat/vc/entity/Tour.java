@@ -35,6 +35,9 @@ public class Tour extends InfoEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
     private Date date;
+    @NotBlank
+    @Column(name = "time_tour")
+    private String timeTour;
     @Column(name = "amount_players")
     private BigDecimal amountPlayers;
     @OneToOne(targetEntity = Address.class, fetch = FetchType.EAGER)

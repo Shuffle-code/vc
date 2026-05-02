@@ -11,6 +11,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import tt.chat.vc.dao.TourDao;
 import tt.chat.vc.dao.TourImageDao;
+import tt.chat.vc.entity.Observer;
+import tt.chat.vc.entity.ObserverImage;
 import tt.chat.vc.entity.Tour;
 import tt.chat.vc.entity.TourImage;
 import tt.chat.vc.exception.StorageException;
@@ -31,7 +33,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TourImageService {
     private static final String path = "tours";
-
+    private final String startImage = "Tour.JPG";
     @Value("${storage.location}")
     private String storagePath;
     private final TourImageDao tourImageDao;
@@ -94,7 +96,9 @@ public class TourImageService {
                     .tour(tour)
                     .build();
             tour.addImage(tourImage);
-            return tourDao.save(tour);
+            Tour savedTour = tourDao.save(tour);
+            deleteStartImage(tourImage);
+            return savedTour;
         }
         return null;
     }
@@ -131,9 +135,6 @@ public class TourImageService {
         if (StringUtils.hasText(filename)) {
             try {
                 Path file = rootLocation.resolve(path).resolve(filename);
-//                private static final String path = "products";
-//                8e6d4478-ee77-4d43-96ef-0d6df9fb1589_i.jpg
-//                products/8e6d4478-ee77-4d43-96ef-0d6df9fb1589_i.jpg
                 Resource resource = new UrlResource(file.toUri());
                 if (resource.exists() || resource.isReadable()) {
                     return resource;
@@ -153,6 +154,27 @@ public class TourImageService {
             tourImageDao.deleteById(idImage);
         }
     }
+
+    public void deleteStartImage(TourImage tourImage){
+        Long idTour = tourImage.getTour().getId();
+        TourImage image = tourImageDao.findFirstByTourId(idTour);
+        if (tourImageDao.count(tourImage.getTour().getId()) > 1 && image.getPath().equals(startImage)){
+            log.info(tourImageDao.count(tourImage.getTour().getId()).toString());
+            log.info(image.getPath());
+            tourImageDao.delete(image);
+        }
+    }
+    public void addStartImage(Tour tour){
+        TourImage tourImage = new TourImage();
+        tourImage.setPath(startImage);
+        tourImage.setTour(tour);
+        tourImageDao.save(tourImage);
+    }
+
+    public List <Long> getAllIdImagesByTourId(Long tourId){
+        return tourImageDao.findAllIdImagesByTourId(tourId);
+    }
+
 
     public Long getTourIdByImageId(Long id) {
         return tourImageDao.findTourIdByImageId(id);

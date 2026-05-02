@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -12,7 +13,7 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig{
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
@@ -24,7 +25,8 @@ public class SecurityConfig{
                         .requestMatchers("/auth/registration","/auth/register","/observer/image/**","/video",
                                 "/swagger-ui.html/**", "/auth/confirmation", "/observer/images/*", "/login","auth/login",
                                 "/auth/invalid-confirmation", "/video/rules", "/observer/all",
-                                "/tour/all", "/tour/image/**", "/tour/images/**", "/css/**", "/js/**", "/script/**", "/static/**" )
+                                "/tour/all", "/tour/image/**", "/tour/images/**", "/css/**",
+                                "/js/**", "/script/**", "/static/**" )
                         .permitAll()
                         .anyRequest().authenticated()
 

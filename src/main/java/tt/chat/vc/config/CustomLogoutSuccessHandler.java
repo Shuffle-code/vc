@@ -9,6 +9,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.stereotype.Component;
 import tt.chat.vc.entity.security.AccountUser;
 import tt.chat.vc.service.ChatService;
+import tt.chat.vc.service.TourService;
 import tt.chat.vc.service.UserService;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.io.IOException;
 public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
     private final ChatService chatService;
     private final UserService userService;
+    private final TourService tourService;
     @Override
     public void onLogoutSuccess(HttpServletRequest request,
                                 HttpServletResponse response,
@@ -26,7 +28,7 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
             throws IOException{
         String username = authentication.getName();
         AccountUser accountUser = userService.findByUsername(username);
-        chatService.userJoined(123L,accountUser.getId());
+        chatService.userJoined(tourService.getCurrentTourId(),accountUser.getId());
         if (!request.getHeader("referer").contains("logout")) {
             response.sendRedirect(request.getHeader("referer"));
         } else {

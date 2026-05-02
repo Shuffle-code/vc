@@ -1,4 +1,4 @@
-package tt.chat.vc.entity;
+package tt.chat.vc.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +7,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import tt.chat.vc.dto.StreamChatMessageDto;
+import tt.chat.vc.entity.StreamChat;
 import tt.chat.vc.entity.enums.StreamChatMessageStatus;
 import tt.chat.vc.service.StreamService;
 
@@ -17,12 +18,8 @@ import java.util.Random;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-//@AllArgsConstructor
 public class SystemMessageScheduler {
-//    @Autowired
     private final SimpMessagingTemplate messagingTemplate;
-
-//    @Autowired
     private final StreamService streamService;
 
     // Отправка каждые 10 минут
@@ -36,18 +33,9 @@ public class SystemMessageScheduler {
             StreamChatMessageDto systemMessageDto = StreamChatMessageDto.builder()
                     .content(getRandomMessage())
                     .status(StreamChatMessageStatus.SYSTEM)
-//                    .senderId(joinMessage.getUserId())
                     .username("Администратор")
                     .timestamp(LocalDateTime.now())
                     .build();
-
-//            StreamChatMessage systemMessage = StreamChatMessage.builder()
-//                    .streamChatMessageStatus(StreamChatMessageStatus.SYSTEM)
-//                    .content(getRandomMessage())
-//                    .timestamp(LocalDateTime.now())
-//                    .build();
-//            log.info(systemMessageDto.getContent() + " " + systemMessageDto.getStatus());
-//            log.info(destination);
             messagingTemplate.convertAndSend(destination, systemMessageDto);
         }
     }

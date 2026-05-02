@@ -24,5 +24,9 @@ public interface TourImageDao extends JpaRepository<TourImage, Long> {
     @Override
     void deleteById(Long aLong);
 
+    TourImage findFirstByTourId(Long tourId);
+    @Query(value = "SELECT COUNT(tour_id) FROM tour_image WHERE tour_image.tour_id = :id", nativeQuery = true)
+    Long count(Long id);
+
 
 }
