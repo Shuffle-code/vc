@@ -21,10 +21,7 @@ import tt.chat.vc.entity.enums.TourStatus;
 import java.io.File;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -167,7 +164,10 @@ public class TourService {
     public BigDecimal countPlayingForTour() {
         return tourDao.findById(getCurrentTourId()).get().getAmountPlayers();
     }
-
+    public List<String> getVideoUrlForTour(Long tourId){
+        Tour tour = tourDao.findTourById(tourId);
+        return Arrays.asList(tour.getVideoUrlCam1(), tour.getVideoUrlCam2());
+    }
     public Long getCurrentTourId() {
         return tourDao.findFirstByDateAfter(now).getId();
     }

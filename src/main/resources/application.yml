@@ -43,6 +43,8 @@ server:
       charset: UTF-8
       enabled: true
       force: true
+      session:
+        timeout: 8h
   port: 1975
   ssl:
     enabled: true

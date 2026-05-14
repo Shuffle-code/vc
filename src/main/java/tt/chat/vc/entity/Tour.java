@@ -54,15 +54,14 @@ public class Tour extends InfoEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private TourStatus status;
-//    @OneToOne(targetEntity = Player.class, fetch = FetchType.EAGER)
-//    @JoinColumn(name = "winner_id", referencedColumnName = "ID")
-//    private Player player;
     @Column(name = "result_tour")
     private String resultTour;
-//    @Column(name = "scoring")
-//    private String scoring;
     @Column(name = "info")
     private String info;
+    @Column(name = "video_url_cam1")
+    private String videoUrlCam1;
+    @Column(name = "video_url_cam2")
+    private String videoUrlCam2;
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

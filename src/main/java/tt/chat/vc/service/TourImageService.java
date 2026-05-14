@@ -33,7 +33,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TourImageService {
     private static final String path = "tours";
-    private final String startImage = "Tour.JPG";
+    private final String startImage = "TOUR.JPG";
     @Value("${storage.location}")
     private String storagePath;
     private final TourImageDao tourImageDao;

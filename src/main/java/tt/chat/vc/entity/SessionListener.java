@@ -6,9 +6,15 @@ import jakarta.servlet.http.HttpSessionListener;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Component;
+import tt.chat.vc.entity.enums.Status;
+import tt.chat.vc.entity.security.AccountUser;
+import tt.chat.vc.entity.security.enums.AccountStatus;
+import tt.chat.vc.service.UserService;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,7 +22,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class SessionListener implements HttpSessionListener {
+    private final UserService userService;
 
     private static final Map<String, String> onlineUsers = new ConcurrentHashMap<>();
     private static AtomicInteger activeSessions = new AtomicInteger(0);
@@ -32,13 +40,37 @@ public class SessionListener implements HttpSessionListener {
         activeSessions.updateAndGet(value -> value > 0 ? value - 1 : 0);
         HttpSession session = event.getSession();
         // Проверяем, была ли сессия аутентифицирована
+        AccountUser accountUser = getUserFromSession(session);
         if (session.getAttribute("SPRING_SECURITY_CONTEXT") != null) {
             authenticatedSessions.decrementAndGet();
         }
         log.info("Сессия уничтожена. Активных сессий: " + activeSessions.get());
+        if (accountUser != null) {
+            // Сессия истекла без выхода - ставим OFFLINE
+            userService.updateUserStatus(accountUser, AccountStatus.OFFLINE, Status.OFFLINE);
+            log.info("Сессия пользователя {} истекла. Статус: OFFLINE", accountUser.getUsername());
+        }
     }
 
-    public static String addUser(String sessionId, String username) {
+    private AccountUser getUserFromSession(HttpSession session) {
+        // Пробуем из атрибута
+        AccountUser accountUser = (AccountUser) session.getAttribute("user");
+        if (accountUser != null) return accountUser;
+        log.info(accountUser.getFirstname());
+
+        // Пробуем из SecurityContext
+        SecurityContext context = (SecurityContext) session
+                .getAttribute("SPRING_SECURITY_CONTEXT");
+        if (context != null && context.getAuthentication() != null) {
+            Object principal = context.getAuthentication().getPrincipal();
+            if (principal instanceof AccountUser) {
+                return (AccountUser) principal;
+            }
+        }
+        return null;
+    }
+
+        public static String addUser(String sessionId, String username) {
         onlineUsers.put(sessionId, username);
         return sessionId;
     }

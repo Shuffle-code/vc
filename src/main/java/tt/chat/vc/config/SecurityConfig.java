@@ -24,9 +24,9 @@ public class SecurityConfig{
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/registration","/auth/register","/observer/image/**","/video",
                                 "/swagger-ui.html/**", "/auth/confirmation", "/observer/images/*", "/login","auth/login",
-                                "/auth/invalid-confirmation", "/video/rules", "/observer/all",
-                                "/tour/all", "/tour/image/**", "/tour/images/**", "/css/**",
-                                "/js/**", "/script/**", "/static/**" )
+                                "/auth/invalid-confirmation", "/video/rules", "/observer/all","/observer/**","/tour/**",
+                                "/tour/all", "/tour/image/**", "/tour/images/**", "/css/**","/video/**","/api/streams/**",
+                                "/js/**", "/script/**", "/static/**", "/websocket/**")
                         .permitAll()
                         .anyRequest().authenticated()
 
@@ -51,6 +51,8 @@ public class SecurityConfig{
                 .httpBasic(Customizer.withDefaults())
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/api/public/**"));
+
         return http.build();
     }
 }
+

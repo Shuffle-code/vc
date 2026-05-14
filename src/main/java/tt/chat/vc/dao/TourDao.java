@@ -24,7 +24,6 @@ public interface TourDao extends JpaRepository<Tour, Long> {
     List<Tour> findAllByStatusNot(TourStatus tourStatus, Sort sort);
     List<Tour> findAllByStatusEquals(TourStatus tourStatus, Sort sort);
 
-
     List<Tour> findByDateGreaterThan(Date date);
 
     Tour findByDateEquals(Date date);
@@ -64,6 +63,7 @@ public interface TourDao extends JpaRepository<Tour, Long> {
                              @Param("id")long id);
 
     Optional<Tour> findFirstByStatus(TourStatus status);
+    Tour findTourById(Long tourId);
 
 
 }

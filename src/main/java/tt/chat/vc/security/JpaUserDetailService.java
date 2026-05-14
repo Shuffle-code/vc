@@ -152,11 +152,27 @@ public class JpaUserDetailService implements UserDetailsService, UserService {
                     (user) ->
                     {
                         accountUser.setVersion(user.getVersion());
-//                        accountUser.setStatus(AccountStatus.ONLINE);
+
                     }
             );
         }
         return accountUserDao.save(accountUser);
+    }
+    @Override
+    public void updateUserStatus (AccountUser accountUser, AccountStatus accountStatus, Status status) {
+        if (accountUser.getId() != null) {
+            accountUserDao.findById(accountUser.getId()).ifPresent(
+                    (user) ->
+                    {
+                        accountUser.setStatus(accountStatus);
+                        accountUser.setVersion(user.getVersion());
+                    }
+            );
+        }
+        accountUserDao.save(accountUser);
+        Observer observer = observerService.findById(accountUser.getObserver().getId());
+        observer.setStatus(status);
+        observerService.save(observer);
     }
 
     @Override

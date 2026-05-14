@@ -2,7 +2,9 @@ package tt.chat.vc.config;
 
 import lombok.extern.slf4j.Slf4j;
 import tt.chat.vc.entity.SessionListener;
+import tt.chat.vc.entity.enums.Status;
 import tt.chat.vc.entity.security.AccountUser;
+import tt.chat.vc.entity.security.enums.AccountStatus;
 import tt.chat.vc.service.ChatService;
 import tt.chat.vc.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +24,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final UserService userService;
-    private final ChatService chatService;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
@@ -30,6 +31,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             throws IOException{
         String username = authentication.getName();
         AccountUser accountUser = userService.findByUsername(username);
+        userService.updateUserStatus(accountUser, AccountStatus.ONLINE, Status.ONLINE);
         HttpSession session = request.getSession();
         session.setAttribute("user", accountUser);
         SessionListener.userAuthenticated(session);

@@ -1,6 +1,7 @@
 package tt.chat.vc.dao.security;
 
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import tt.chat.vc.entity.security.AccountUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import tt.chat.vc.entity.security.enums.AccountStatus;
@@ -14,6 +15,5 @@ public interface AccountUserDao extends JpaRepository<AccountUser, Long> {
 //    List<AccountUser> findAllByEnabled();
 
     AccountUser findByStatus(AccountUser accountUser);
-    @Query(value = "SELECT OBSERVER_ID FROM account_user where ENABLED = true", nativeQuery = true)
-    List<Long> getAllByEnabled();
+
 }

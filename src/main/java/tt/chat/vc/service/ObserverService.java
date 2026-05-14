@@ -16,10 +16,12 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import tt.chat.vc.entity.security.AccountUser;
+import tt.chat.vc.entity.security.enums.AccountStatus;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -110,6 +112,10 @@ public class ObserverService {
         return getObserver(observer, bigDecimal);
     }
 
+    public List<Long> getAllByStatus(AccountStatus accountStatus){
+        return observerDao.getAllIdObserverByStatus(accountStatus);
+    }
+
     @Transactional
     public Observer save(final Observer observer) {
         return save(observer, (MultipartFile) null);
@@ -170,7 +176,7 @@ public class ObserverService {
 
     @Transactional(readOnly = true)
     public List<Observer> findAllEnabledUsers(List<Long> usersId) {
-        return observerDao.findAllById(accountUserDao.getAllByEnabled());
+        return observerDao.findAllById(observerDao.getAllByEnabled());
     }
     @Transactional(readOnly = true)
     public List<Observer> findAllActiveSortedByRating() {
@@ -200,13 +206,28 @@ public class ObserverService {
     }
 
 
+    public List<Observer> getAllObserverByStatus(AccountStatus accountStatus){
+        return observerDao.getAllObserverByStatus(accountStatus);
+    }
+
     public String stringObserver(Observer observer){
         String str = observer.getFirstname() + observer.getLastname();
         return str;
     }
     @Transactional(readOnly = true)
     public Observer findById(Long id) {
-    return observerDao.findById(id).orElse(null);
-}
+        return observerDao.findById(id).orElse(null);
+    }
+    public List<Observer> findAllOnlineFirst() {
+        List<Observer> observers = observerDao.findAll();
+
+        // Сортируем: сначала ONLINE, потом остальные
+        observers.sort(Comparator.comparing((Observer o) ->
+                !"ONLINE".equals(o.getStatus())  // ONLINE в начало
+        ).thenComparing(Comparator.comparing(Observer::getId).reversed()));
+
+        return observers;
+    }
+
 
 }

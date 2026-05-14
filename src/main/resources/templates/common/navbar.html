@@ -38,8 +38,8 @@
                 <li sec:authorize="hasAuthority('observer.create')" class="nav-item">
                     <a class="btn btn-outline-success btn-rounded" th:classappend="${activeTab == 'TourNew' ? 'active' : ''}" th:href="@{/tour/new}">Создать турнир</a>
                 <li class="nav-item">
-                <li sec:authorize="hasAuthority('observer.read')" class="nav-item">
-                    <a type="button" class="btn btn-outline-warning btn-rounded" th:classappend="${activeTab == 'VIDEO' ? 'active' : ''}" th:href="@{/video}">Смотреть трансляцию</a>
+                <li sec:authorize="hasAuthority('observer.create')" class="nav-item">
+                    <a type="button" class="btn btn-outline-warning btn-rounded" th:classappend="${activeTab == 'ObserverNew' ? 'active' : ''}" th:href="@{/observer}">Добавить зрителя</a>
                 </li>
                 <li sec:authorize="isAnonymous()" class="nav-item">
                     <a type="button" th:href="@{/auth/login}" class="btn btn-success">Войти</a>

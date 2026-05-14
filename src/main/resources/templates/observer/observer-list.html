@@ -39,7 +39,7 @@
             </thead>
             <tbody data-mdb-spy="scroll">
             <tr th:each="observer, i : ${observers}"
-                th:classappend="${observer.status.name() == 'ACTIVE'} ? 'table-success' : 'table-secondary'"
+                th:classappend="${observer.status.name() == 'ONLINE'} ? 'table-success' : 'table-secondary'"
                 th:attr="observer_index=${observer.id}">
                 <th scope="row" th:text="${i.count}"></th>
                 <td>

@@ -51,8 +51,8 @@ public class ChatWebSocketController {
             Principal principal,
             SimpMessageHeaderAccessor headerAccessor) {
 
-        log.info("WebSocket message received: stream={}, user={}, content={}",
-                streamId, principal.getName(), content);
+//        log.info("WebSocket message received: stream={}, user={}, content={}",
+//                streamId, principal.getName(), content);
 
         try {
             // Отправляем сообщение через сервис

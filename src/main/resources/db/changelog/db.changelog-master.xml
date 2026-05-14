@@ -64,5 +64,7 @@
             file="db/changelog/fillTables/fill-table-observer_image.xml"/>
     <include
             file="db/changelog/fillTables/fill-table-address_prod.xml"/>
+    <include
+            file="db/changelog/fillTables/fill-table-tournament.xml"/>
 
 </databaseChangeLog> 

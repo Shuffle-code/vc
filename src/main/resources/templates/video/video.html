@@ -72,11 +72,11 @@
         .fw-semibold { font-weight: 600; }
         .fw-normal { font-weight: 400; }
         .text-muted { color: #6c757d; }
-
-
     </style>
 </head>
-<body th:attr="data-current-user-id=${currentUserId}, data-stream-id=${streamId}">
+<body th:attr="data-current-user-id=${currentUserId}, data-stream-id=${streamId},
+      data-single-camera-mode=${singleCameraMode},
+      data-active-camera=${activeCamera}">
 <div th:replace="~{common/navbar :: navi(VIDEO)}"></div>
 <div class="container-fluid pt-3 pb-5">
     <!-- Основной контент -->
@@ -85,20 +85,22 @@
         <div class="col-lg-9">
             <div class="row g-3">
                 <!-- Камера 1 -->
-                <div class="col-md-6">
+                <div class="col-md-6" id="camera1Card">
                     <div class="card h-100">
                         <div class="card-header d-flex justify-content-between align-items-center py-2">
                             <span class="fw-bold">Камера 1</span>
                             <div class="form-check form-switch mb-0">
-                                <input class="form-check-input" type="checkbox" id="camera1Toggle" checked>
-                                <label class="form-check-label" for="camera1Toggle">Звук</label>
+                                <button class="btn btn-sm btn-outline-danger" id="hideCamera1Btn">
+                                    <i class="bi bi-power"></i>
+                                </button>
                             </div>
                         </div>
                         <div class="card-body p-0 video-container overflow-hidden">
                             <div class="d-flex justify-content-center align-items-center bg-dark text-white"
                                  style="height: 432px;">
-                                <div>
-                                    <iframe width="576" height="432" src="http://localhost:1984/stream.html?src=cam1"></iframe>
+                                <div style="width: 100%; height: 100%;">
+                                    <iframe controls width="100%" height="432" style="background: #000;" seamless="seamless" allowfullscreen
+                                            th:attr="src=${videoUrl}"></iframe>
                                 </div>
                             </div>
                         </div>
@@ -106,20 +108,36 @@
                 </div>
 
                 <!-- Камера 2 -->
-                <div class="col-md-6">
+                <div class="col-md-6" id="camera2Card">
                     <div class="card h-100">
                         <div class="card-header d-flex justify-content-between align-items-center py-2">
                             <span class="fw-bold">Камера 2</span>
                             <div class="form-check form-switch mb-0">
-                                <input class="form-check-input" type="checkbox" id="camera2Toggle" checked>
-                                <label class="form-check-label" for="camera2Toggle">Звук</label>
+                                <button class="btn btn-sm btn-outline-danger" id="hideCamera2Btn">
+                                    <i class="bi bi-power"></i>
+                                </button>
                             </div>
                         </div>
                         <div class="card-body p-0 video-container overflow-hidden">
                             <div class="d-flex justify-content-center align-items-center bg-dark text-white"
                                  style="height: 432px;">
-                                <div>
-                                    <iframe width="576" height="432" src="https://vk.com/video_ext.php?oid=-106879986&id=456252669&hash=5d26418cb04251ab&hd" ></iframe>
+                                <div style="width: 100%; height: 100%;">
+                                    <!-- Проверяем режим и наличие URL -->
+                                    <th:block th:with="isSingleMode=${singleCameraMode != null ? singleCameraMode : false},
+                              isActiveCam2=${activeCamera != null ? activeCamera == 2 : false}">
+
+                                        <!-- Для video -->
+                                        <div th:if="${isSingleMode and isActiveCam2}">
+                                            <video id="tableTennisVideo" controls width="100%" height="432" style="background: #000;"></video>
+                                        </div>
+                                        <!-- Для iframe -->
+                                        <div th:unless="${isSingleMode and isActiveCam2}">
+                                            <iframe controls width="100%" height="432" style="background: #000;"
+                                                    seamless="seamless" allowfullscreen
+                                                    th:src="${videoUrlCam2}">
+                                            </iframe>
+                                        </div>
+                                    </th:block>
                                 </div>
                             </div>
                         </div>
@@ -143,14 +161,14 @@
                                                     <th scope="col" class="fw-medium"></th>
                                                     <th scope="col" class="fw-medium">Адрес</th>
                                                     <th scope="col" class="fw-medium text-center">Кол-во игроков</th>
-                                                    <th scope="col" sec:authorize="hasAuthority('observer.read')">Перейти</th>
+                                                    <th scope="col" >Перейти</th>
                                                 </thead>
                                                 <tbody data-mdb-spy="scroll">
                                                 <tr th:each="tour, i : ${tours}">
                                                     <td th:text="${tour.title}"></td>
                                                     <td th:text="${tour.address.getStreet + ', ' + #numbers.formatDecimal(tour.address.house, 1, 0)}"></td>
                                                     <td th:text="${(tour.amountPlayers == null)}? '0' : ${tour.amountPlayers}" class="text-center"></td>
-                                                    <td sec:authorize="hasAuthority('observer.read')">
+                                                    <td>
                                                         <a type="button" th:href="@{'/video/' + ${tour.id}}" class="btn btn-outline-secondary"
                                                            th:if="${tour.id != tourId}">Перейти</a>
                                                     </td>
@@ -242,6 +260,14 @@
                                 <i class="bi bi-send-fill"></i>
                             </button>
                         </form>
+                        <div class="mt-2 d-flex justify-content-between">
+                            <small class="text-muted">Сообщения видны всем участникам трансляции</small>
+                            <button class="btn btn-sm btn-outline-secondary">
+                                <a th:href="@{/observer/all}">
+                                    <i class="bi bi-emoji-smile"></i>
+                                </a>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -255,8 +281,134 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js" integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="/script/chatClient.js"></script>
-<!--<script src="/script/modal-fix.js"></script>-->
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script>
+    const style = document.createElement('style');
+    style.textContent = `
+    .single-camera-mode .col-md-6 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+    .single-camera-mode .row {
+        margin: 0 !important;
+    }
+    .full-size-camera {
+        height: calc(100vh) !important;
+    }
+    .full-size-camera video,
+    .full-size-camera iframe {
+        height: 100% !important;
+        width: 100% !important;
+        object-fit: contain !important;
+    }
+`;
+    document.head.appendChild(style);
+    document.addEventListener('DOMContentLoaded', function() {
+        const hideCamera1Btn = document.getElementById('hideCamera2Btn');
+        const hideCamera2Btn = document.getElementById('hideCamera1Btn');
+        const camera1Card = document.getElementById('camera1Card');
+        const camera2Card = document.getElementById('camera2Card');
+        const videoContainer = document.querySelector('.col-lg-9');
+        let camera1Hidden = false;
+        let camera2Hidden = false;
+        const singleCameraMode = document.body.dataset.singleCameraMode === 'true';
+        const activeCamera = parseInt(document.body.dataset.activeCamera);
+        function updateButtons() {
+            // Обновляем текст и класс кнопки для камеры 1
+            if (hideCamera1Btn) {
+                if (camera1Hidden) {
+                    hideCamera1Btn.innerHTML = '<i class="bi bi-power"></i>';
+                    hideCamera1Btn.classList.remove('btn-outline-danger');
+                    hideCamera1Btn.classList.add('btn-outline-success');
+                } else {
+                    hideCamera1Btn.innerHTML = '<i class="bi bi-power"></i>';
+                    hideCamera1Btn.classList.remove('btn-outline-success');
+                    hideCamera1Btn.classList.add('btn-outline-danger');
+                }
+            }
+
+            // Обновляем текст и класс кнопки для камеры 2
+            if (hideCamera2Btn) {
+                if (camera2Hidden) {
+                    hideCamera2Btn.innerHTML = '<i class="bi bi-power"></i>';
+                    hideCamera2Btn.classList.remove('btn-outline-danger');
+                    hideCamera2Btn.classList.add('btn-outline-success');
+                } else {
+                    hideCamera2Btn.innerHTML = '<i class="bi bi-power"></i>';
+                    hideCamera2Btn.classList.remove('btn-outline-success');
+                    hideCamera2Btn.classList.add('btn-outline-danger');
+                }
+            }
+        }
+
+        function resetToBothCameras() {
+            // Возвращаем обе камеры
+            camera1Hidden = false;
+            camera2Hidden = false;
+
+            if (camera1Card) {
+                camera1Card.style.display = 'block';
+                camera1Card.classList.remove('full-size-video');
+            }
+            if (camera2Card) {
+                camera2Card.style.display = 'block';
+                camera2Card.classList.remove('full-size-video');
+            }
+            if (videoContainer) {
+                videoContainer.classList.remove('single-camera-mode');
+            }
+
+            updateButtons();
+        }
+
+        function showOnlyCamera(cameraNumber) {
+            if (cameraNumber === 1) {
+                if (!camera1Hidden) {
+                    // Прячем камеру 2 и показываем только камеру 1
+                    camera1Hidden = false;
+                    camera2Hidden = true;
+
+                    if (camera2Card) camera2Card.style.display = 'none';
+                    if (camera1Card) {
+                        camera1Card.style.display = 'block';
+                        camera1Card.classList.add('full-size-iframe');
+                    }
+                    if (videoContainer) videoContainer.classList.add('single-camera-mode');
+                } else {
+                    // Возвращаем обе камеры
+                    resetToBothCameras();
+                }
+            } else if (cameraNumber === 2) {
+                if (!camera2Hidden) {
+                    // Прячем камеру 1 и показываем только камеру 2
+                    camera1Hidden = true;
+                    camera2Hidden = false;
+
+                    if (camera1Card) camera1Card.style.display = 'none';
+                    if (camera2Card) {
+                        camera2Card.style.display = 'block';
+                        camera2Card.classList.add('full-size-iframe');
+                    }
+                    if (videoContainer) videoContainer.classList.add('single-camera-mode');
+                } else {
+                    // Возвращаем обе камеры
+                    resetToBothCameras();
+                }
+            }
+
+            updateButtons();
+        }
+
+        hideCamera1Btn?.addEventListener('click', () => showOnlyCamera(1));
+        hideCamera2Btn?.addEventListener('click', () => showOnlyCamera(2));
+        if (singleCameraMode && activeCamera === 2) {
+            showOnlyCamera(2);
+            if (hideCamera1Btn) {
+                hideCamera1Btn.style.display = 'none';
+            }
+        }
+        });
     // Функция для создания элемента сообщения
     function createMessageElement(message, currentUserId) {
         const messageDiv = document.createElement('div');
@@ -410,6 +562,20 @@
                     window.sendMessage();
                 }
             });
+        }
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        const video = document.getElementById('tableTennisVideo');
+        const videoUrl = 'https://cdn.fast.jwp.services/v1/channel/0_zetjamzo_Hplllvlc/manifest/3.m3u8';
+        video.muted = true;
+        if (video && Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(videoUrl);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = videoUrl;
+            video.addEventListener('loadedmetadata', () => video.play());
         }
     });
 </script>

@@ -1,6 +1,7 @@
 package tt.chat.vc.service;
 
 import tt.chat.vc.dto.UserDto;
+import tt.chat.vc.entity.enums.Status;
 import tt.chat.vc.entity.security.AccountUser;
 import tt.chat.vc.entity.security.enums.AccountStatus;
 
@@ -22,5 +23,6 @@ public interface UserService {
     void disconnect(AccountUser accountUser);
     List<AccountUser> findAllByStatus(AccountStatus accountStatus);
 
+    void updateUserStatus(AccountUser accountUser, AccountStatus accountStatus, Status status);
 
 }

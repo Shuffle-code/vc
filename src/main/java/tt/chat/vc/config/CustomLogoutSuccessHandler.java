@@ -7,7 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
+import tt.chat.vc.entity.enums.Status;
 import tt.chat.vc.entity.security.AccountUser;
+import tt.chat.vc.entity.security.enums.AccountStatus;
 import tt.chat.vc.service.ChatService;
 import tt.chat.vc.service.TourService;
 import tt.chat.vc.service.UserService;
@@ -28,6 +30,7 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
             throws IOException{
         String username = authentication.getName();
         AccountUser accountUser = userService.findByUsername(username);
+        userService.updateUserStatus(accountUser, AccountStatus.OFFLINE, Status.OFFLINE);
         chatService.userJoined(tourService.getCurrentTourId(),accountUser.getId());
         if (!request.getHeader("referer").contains("logout")) {
             response.sendRedirect(request.getHeader("referer"));
