@@ -199,27 +199,18 @@ public class ChatService {
      */
     @Transactional
     public void userLeft(Long streamId, Long userId) {
-        AccountUser accountUser = accountUserDao.findById(Long.valueOf(userId)).orElse(null);
+        Optional<AccountUser> accountUser = accountUserDao.findById(userId);
+        Observer observer = observerDao.findByAccountUserId(accountUser.get().getId());
         if (accountUser == null) return;
-
-//        StreamChatMessageDto joinNotification = StreamChatMessageDto.builder()
-//                .content(" присоединился к чату")
-//                .status(StreamChatMessageStatus.JOIN)
-//                .senderId(joinMessage.getUserId())
-//                .username(username)
-//                .timestamp(LocalDateTime.now())
-//                .build();
-
         StreamChatMessageDto leaveMessage = StreamChatMessageDto.builder()
                 .id(System.currentTimeMillis())
                 .streamId(streamId)
                 .senderId(userId)
-                .username(accountUser.getUsername())
-                .content(accountUser.getUsername() + " покинул чат")
+                .username(observer.getFirstname() + " " + observer.getLastname())
+                .content(" покинул чат")
                 .timestamp(LocalDateTime.now())
                 .status(StreamChatMessageStatus.LEAVE)
                 .build();
-
         messagingTemplate.convertAndSend(
                 String.format("/topic/streams/%d", streamId),
                 leaveMessage

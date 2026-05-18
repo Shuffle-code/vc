@@ -2,6 +2,7 @@ package tt.chat.vc.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -15,6 +16,8 @@ import tt.chat.vc.service.TourService;
 import tt.chat.vc.service.UserService;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 @Slf4j
@@ -22,7 +25,7 @@ import java.io.IOException;
 public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
     private final ChatService chatService;
     private final UserService userService;
-    private final TourService tourService;
+    private static final Long START_TOUR_ID = 0L;
     @Override
     public void onLogoutSuccess(HttpServletRequest request,
                                 HttpServletResponse response,
@@ -31,13 +34,26 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
         String username = authentication.getName();
         AccountUser accountUser = userService.findByUsername(username);
         userService.updateUserStatus(accountUser, AccountStatus.OFFLINE, Status.OFFLINE);
-        chatService.userJoined(tourService.getCurrentTourId(),accountUser.getId());
+        chatService.userLeft(getCurrentTourIdFromReferer(request), accountUser.getId());
         if (!request.getHeader("referer").contains("logout")) {
             response.sendRedirect(request.getHeader("referer"));
         } else {
             response.sendRedirect(request.getContextPath() + "/video");
 
         }
+    }
+
+    private Long getCurrentTourIdFromReferer(HttpServletRequest request) {
+        String referer = request.getHeader("referer");
+        if (referer != null && referer.matches(".*/video/\\d+.*")) {
+            // Извлекаем число из URL
+            Pattern pattern = Pattern.compile("/video/(\\d+)");
+            Matcher matcher = pattern.matcher(referer);
+            if (matcher.find()) {
+                return Long.parseLong(matcher.group(1));
+            }
+        }
+        return START_TOUR_ID;
     }
 
 }

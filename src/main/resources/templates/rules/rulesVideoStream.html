@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Игрок</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div th:replace="~{common/navbar :: navi(activeTab='Rules')}"></div>
+
+
+<h4 class="text-center">🏃‍♂️ Будь активным – начни с просмотра, продолжай движением!</h4>
+
+
+<div class="container">
+<div class="accordion" id="accordionExample">
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingTwo">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                <p class="text-primary"><strong>Цели и задачи:</strong></p>
+            </button>
+        </h2>
+        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <p><strong>Показать красоту спорта, его эмоции и честную борьбу.</strong></p>
+                <p>Вдохновить зрителей на собственные занятия спортом, фитнесом или простой ежедневной активностью.</p>
+                <p>Создать дружелюбное сообщество, где ценят уважение, дисциплину и взаимную поддержку.</p>
+                <p>Отвлечь от негатива и агрессии – сосредоточиться на том, что объединяет людей.</p>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                <p class="text-primary"><strong>Общие правила поведения в чате:</strong></p>
+            </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <p><strong>Приветствуется:</strong> </p>
+                <p> – Обсуждение тактики, техники, правил соревнований.</p>
+                <p> – Поддержка спортсменов: «Красивый удар!», «Отличная защита!», «Молодец, собрался!».</p>
+                <p> – Вопросы о спорте, здоровом образе жизни, тренировках.</p>
+                <p> – Делиться своим опытом: «Я тоже бегаю, после такого матча захотелось на пробежку».</p>
+                <p> – Конструктивная критика без агрессии (например, «судья ошибся, но это часть игры»).</p>
+                <p><strong>Запрещено:</strong></p>
+                <p> – Нецензурная лексика (мат, любые оскорбительные выражения, даже замаскированные символами).</p>
+                <p> – Оскорбления участников, комментаторов, спортсменов, судей или организаторов.</p>
+                <p> – Обсуждение политики (любых стран, партий, лидеров, геополитических событий).</p>
+                <p> – Переход на личности между зрителями.</p>
+                <p> – Провокации, флейм, бессмысленные споры (например, «ты ничего не понимаешь в спорте»).</p>
+                <p> – Спам, капс, повторяющиеся сообщения, реклама (без согласия модератора).</p>
+                <p> – Обсуждение травм или неудач спортсменов в унизительной форме.</p>
+                <p><strong>Основное правило чата:</strong> – «Ты можешь болеть за разных спортсменов, но уважать обязан всех».</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                <p class="text-primary"><strong>Технические и организационные условия:</strong></p>
+            </button>
+        </h2>
+        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <p><strong> За оскорбления, политику, мат – предупреждение или мгновенный бан (на усмотрение модератора).</strong></p>
+                <p> Систематические нарушения – перманентный бан.</p>
+                <p> Модераторы имеют право удалять любое сообщение, нарушающее дух трансляции (даже формально не подпадающее под букву правил).</p>
+                <p> Жалобы на действия модераторов принимаются только в личные сообщения на 📧 shuffle2149@gmail.com, 📱 Telegram: @ShuffleCode(только текстовые сообщения, без звонков).</p>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingFour">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                <p class="text-primary"><strong>Согласие с правилами:</strong></p>
+            </button>
+        </h2>
+        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <p>Продолжая просмотр и участие в чате, вы автоматически подтверждаете согласие с данными правилами.</p>
+                <p>Нарушитель может быть удалён без предупреждения, если нарушение грубое (мат, политика, оскорбления).</p>
+                <p><strong>Давайте вместе делать спорт нормой жизни, а чат – местом силы и уважения.</strong></p>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingFive">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                <p class="text-primary"><strong> ✍️ Ваши пожелания к функционалу и оформлению:</strong></p>
+            </button>
+        </h2>
+        <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <p><strong> Мы открыты к обратной связи — особенно от активных зрителей и участников сообщества.
+                    Вместе мы сделаем трансляции удобными, красивыми и вдохновляющими. Что можно предлагать:</strong></p>
+                <p> Идеи по оформлению интерфейса (цвета, шрифты, расположение блоков с результатами).</p>
+                <p> Новые рубрики во время трансляций (разбор моментов, история спорта, мини-уроки активности).</p>
+                <p> Любые другие пожелания, которые сделают трансляции полезнее. </p>
+                <p><strong> 📌 Контакт для пожеланий и предложений:</strong></p>
+                <p> 📧 shuffle2149@gmail.com</p>
+                <p> 📱 Telegram: @ShuffleCode(только текстовые сообщения, без звонков)</p>
+                <p> <strong>Важно:</strong> Письма с темой «Пожелание функционал» или «Пожелание оформление» обрабатываются в первую очередь.</p>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingSix">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                <p class="text-primary"><strong>Пожертвования и поддержка:</strong></p>
+            </button>
+        </h2>
+        <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <p><strong> Мы создаем трансляции, которые не просто показывают спорт, а меняют привычки людей: мотивируют встать с дивана, сделать зарядку, выбрать активный образ жизни.
+                    Нам важна не только аудитория, но и устойчивое развитие проекта.</strong></p>
+                <p><strong> На какие цели идут пожертвования:</strong></p>
+                <p> Аренда VPS, SSL, облачного сервиса видеонаблюдения, широкополосного доступа в интернет, доменного имя.</p>
+                <p> Разработка и улучшение интерфейса трансляций (включая ваши пожелания).</p>
+                <p> Расширение сети спортивных трансляций (новые залы, новые выды спорта, дворовый спорт). </p>
+                <p> Покупка оборудования (Ip-камеры, коммутаторы, средства коммутации). </p>
+                <p><strong> Реквизиты для поддержки (пожертвования):</strong></p>
+                <p> 💳 Карта: 2202 2053 1014 3679 </p>
+                <p> <strong>🙏 Спасибо за ваш вклад в любительский спорт!</strong> </p>
+            </div>
+        </div>
+    </div>
+</div>
+    <foot>
+        <br>
+        <br>
+    </foot>
+</div>
+<div th:replace="~{common/footer :: footerBlock}"/>
+
+</body>
+</html>

@@ -24,6 +24,8 @@ import tt.chat.vc.entity.enums.StreamChatMessageStatus;
 import tt.chat.vc.entity.security.AccountUser;
 import tt.chat.vc.service.ChatService;
 import tt.chat.vc.service.UserService;
+import tt.chat.vc.service.WebSocketSessionService;
+
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -38,6 +40,7 @@ public class ChatWebSocketController {
     private final ChatService chatService;
     private final UserService userService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final WebSocketSessionService sessionService;
 
 
     /**
@@ -50,9 +53,6 @@ public class ChatWebSocketController {
             @RequestBody String content,
             Principal principal,
             SimpMessageHeaderAccessor headerAccessor) {
-
-//        log.info("WebSocket message received: stream={}, user={}, content={}",
-//                streamId, principal.getName(), content);
 
         try {
             // Отправляем сообщение через сервис
@@ -69,23 +69,26 @@ public class ChatWebSocketController {
      * Обработка отключения
      * Регистрируется через @EventListener
      */
-    @EventListener
-    public void handleSessionDisconnect(SessionDisconnectEvent event) {
-        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.wrap(event.getMessage());
-        Long streamId = (Long) headerAccessor.getSessionAttributes().get("streamId");
-        Long userId = (Long) headerAccessor.getSessionAttributes().get("userId");
-        String closeStatus = (String) headerAccessor.getSessionAttributes().get("closeStatus");
-        if (streamId != null && userId != null) {
-            // Отправляем LEAVE только при явном выходе
-            if ("logout".equals(closeStatus) || "session-expired".equals(closeStatus) || "forced-logout".equals(closeStatus)) {
-                log.info("User {} logged out from stream {}", userId, streamId);
-                chatService.userLeft(streamId, userId);
-            } else {
-                log.info("User {} disconnected (page reload/tab close), skipping LEAVE", userId);
-                // Не отправляем LEAVE при перезагрузке
-            }
-        }
-    }
+//    @EventListener
+//    public void handleSessionDisconnect(SessionDisconnectEvent event) {
+//        Principal principal = event.getUser();
+//        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.wrap(event.getMessage());
+//        if (principal != null) {
+//            String username = principal.getName();
+//            Long userId = userService.findByUsername(username).getId();
+//            log.info(userId.toString());
+//            chatService.userLeft(0L, userId);
+//            String closeStatus = (String) headerAccessor.getSessionAttributes().get("closeStatus");
+//            // Отправляем LEAVE только при явном выходе
+//            if ("logout".equals(closeStatus) || "session-expired".equals(closeStatus) || "forced-logout".equals(closeStatus)) {
+//                log.info("User {} logged out from stream {}", userId, 0L);
+//                chatService.userLeft(0L, userId);
+//            } else {
+//                log.info("User {} disconnected (page reload/tab close), skipping LEAVE", userId);
+//            }
+//        }
+//    }
+
 
     @MessageMapping("/streams/{streamId}/join")
     public void handleJoin(

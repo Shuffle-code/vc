@@ -44,8 +44,8 @@ public class ObserverController {
     public String getObserverList(Model model, HttpSession httpSession){
         httpSession.setAttribute("countObservers", SessionListener.getActiveSessions());
 //        httpSession.setAttribute("countPlaying", observerService.countPlaying());
-//        model.addAttribute("observers", observerService.getAllObserverByStatus(AccountStatus.ONLINE));
-        model.addAttribute("observers", observerService.findAllOnlineFirst());
+        model.addAttribute("observers", observerService.findAllSortedByStatusOnlineFirst());
+//        model.addAttribute("observers", observerService.findAllOnlineFirst());
         return "observer/observer-list";
     }
 

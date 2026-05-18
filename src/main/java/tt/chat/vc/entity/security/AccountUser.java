@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Setter
 @Getter
+@Builder
 @AllArgsConstructor
 @Entity
 @Table(name = "ACCOUNT_USER")

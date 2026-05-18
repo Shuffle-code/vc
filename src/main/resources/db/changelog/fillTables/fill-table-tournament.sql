@@ -27,9 +27,9 @@ INSERT INTO tournament (
              '2022-09-14 07:52:54'::TIMESTAMP,
              'admin',
              '2022-09-19 06:18:18'::TIMESTAMP,
-             'ACTIVE'::VARCHAR,
+             'FINISHED'::VARCHAR,
              NULL,
              NULL,
-             'https://cdn.fast.jwp.services/v1/channel/0_zetjamzo_Hplllvlc/manifest/3.m3u8',
-             'http://localhost:1984/stream.html?src=cam1'
+             NULL,
+             NULL
          );

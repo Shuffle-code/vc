@@ -2,6 +2,8 @@ package tt.chat.vc.entity;
 
 import lombok.Data;
 
+import java.util.Objects;
+
 @Data
 public class JoinMessage {
     private Long userId;
@@ -17,5 +19,9 @@ public class JoinMessage {
         JoinMessage joinMessage = (JoinMessage) o;
         return userId.equals(joinMessage.getUserId()) && username.equals(joinMessage.username) &&
                 action.equals(joinMessage.action) && timestamp.equals(joinMessage.timestamp);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, username, action, timestamp);
     }
 }

@@ -66,5 +66,8 @@
             file="db/changelog/fillTables/fill-table-address_prod.xml"/>
     <include
             file="db/changelog/fillTables/fill-table-tournament.xml"/>
-
+    <include
+            file="db/changelog/fillTables/fill-table-tour_image.xml"/>
+    <include
+            file="db/changelog/fillTables/fill-table-stream_chat.xml"/>
 </databaseChangeLog> 

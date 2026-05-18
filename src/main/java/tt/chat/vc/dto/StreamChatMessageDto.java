@@ -20,6 +20,7 @@ public class StreamChatMessageDto {
     private String username;
     private String content;
     private LocalDateTime timestamp;
+    @Builder.Default
     private StreamChatMessageStatus status = StreamChatMessageStatus.RUN;
 
 //    public StreamChatMessageDto(Long id, String content, String username,StreamChatStatus streamChatStatus, LocalDateTime timestamp) {

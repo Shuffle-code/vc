@@ -83,6 +83,10 @@ public class VideoController {
     public String rules() {
         return "rules/rules";
     }
+    @GetMapping("/rulesVideoStream")
+    public String rulesVideoStream() {
+        return "rules/rulesVideoStream";
+    }
 
     @GetMapping("/rtsp-stream")
     public String getRtspStream(Model model) throws NoSuchAlgorithmException {

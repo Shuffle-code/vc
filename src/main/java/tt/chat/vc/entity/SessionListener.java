@@ -56,7 +56,7 @@ public class SessionListener implements HttpSessionListener {
         // Пробуем из атрибута
         AccountUser accountUser = (AccountUser) session.getAttribute("user");
         if (accountUser != null) return accountUser;
-        log.info(accountUser.getFirstname());
+//        log.info(accountUser.getFirstname());
 
         // Пробуем из SecurityContext
         SecurityContext context = (SecurityContext) session

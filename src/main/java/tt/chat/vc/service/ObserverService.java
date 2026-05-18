@@ -218,15 +218,10 @@ public class ObserverService {
     public Observer findById(Long id) {
         return observerDao.findById(id).orElse(null);
     }
-    public List<Observer> findAllOnlineFirst() {
-        List<Observer> observers = observerDao.findAll();
 
-        // Сортируем: сначала ONLINE, потом остальные
-        observers.sort(Comparator.comparing((Observer o) ->
-                !"ONLINE".equals(o.getStatus())  // ONLINE в начало
-        ).thenComparing(Comparator.comparing(Observer::getId).reversed()));
 
-        return observers;
+    public List<Observer> findAllSortedByStatusOnlineFirst(){
+        return observerDao.findAllSortedByStatusOnlineFirst();
     }
 
 

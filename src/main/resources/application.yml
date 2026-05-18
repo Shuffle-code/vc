@@ -1,11 +1,30 @@
-spring:
-  thymeleaf:
-    encoding: UTF-8
-    mode: HTML
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+      session:
+        timeout: 8h
+  port: 1975
+  ssl:
+    enabled: true
+    key-store-type: "PKCS12"
+    key-store: "classpath:keystore.p12"
+    key-store-password: ${KEYSTORE_PASSWORD:shuffle}
+    key-alias: "tomcat"
+
   logging:
     charset:
       console: UTF-8
       file: UTF-8
+
+
+
+spring:
+  thymeleaf:
+    encoding: UTF-8
+    mode: HTML
   mail:
     host: "smtp.gmail.com"
     port: 587
@@ -35,23 +54,15 @@ spring:
     url: "jdbc:postgresql://localhost:5439/ttvc"
     username: ${DB_USERNAME:shuffle}
     password: ${DB_PASSWORD:shuffle}
-
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
-      session:
-        timeout: 8h
-  port: 1975
   ssl:
     enabled: true
     key-store-type: "PKCS12"
     key-store: "classpath:keystore.p12"
     key-store-password: ${KEYSTORE_PASSWORD:shuffle}
     key-alias: "tomcat"
+
+
+
 
 storage:
   location: ${STORAGE_LOCATION:./storage}
@@ -68,12 +79,6 @@ spring:
     url: "jdbc:postgresql://localhost:5432/ttvc"
     username:  ${PROD_DB_USERNAME:shuffle}
     password:  ${PROD_DB_PASSWORD:rfvby}
-  ssl:
-    enabled: true
-    key-store-type: "PKCS12"
-    key-store: "classpath:keystore.p12"
-    key-store-password: ${KEYSTORE_PASSWORD:shuffle}
-    key-alias: "tomcat"
   storage:
     location: '/home/shuffle/java/storage'
 
@@ -85,13 +90,7 @@ spring:
       on-profile: dev
   datasource:
     url: "jdbc:postgresql://localhost:5439/ttvc"
-    username: ${PROD_DB_USERNAME:shuffle}
+    username: ${DEV_DB_USERNAME:shuffle}
     password: ${DEV_DB_PASSWORD:shuffle}
-  ssl:
-    enabled: true
-    key-store-type: "PKCS12"
-    key-store: "classpath:keystore.p12"
-    key-store-password: ${KEYSTORE_PASSWORD:shuffle}
-    key-alias: "tomcat"
   storage:
     location: ${STORAGE_LOCATION:./storage}

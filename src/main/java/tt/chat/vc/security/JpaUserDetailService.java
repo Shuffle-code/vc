@@ -54,11 +54,9 @@ public class JpaUserDetailService implements UserDetailsService, UserService {
         );
 
     }
-
     @Override
     public String getConfirmationCode() {
-        String confirmationCode;
-        return confirmationCode = RandomStringUtils.randomNumeric(5);
+        return RandomStringUtils.randomNumeric(5); // В новых версиях уже не deprecated
     }
 
     @Override

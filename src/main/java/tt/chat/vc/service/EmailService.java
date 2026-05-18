@@ -22,7 +22,7 @@ public class EmailService {
             message.setTo(email);
             message.setSubject("Приложение: '_ViddeoStrim TT Nsk_'");
             message.setText("\nВаш код для подтверждения регистрации: \n" + code + "\nС Уважением администрация: \n" +
-                    "т. 8-913-006-21-49");
+                    "vs-sport.online");
 
             sender.send(message);
 
