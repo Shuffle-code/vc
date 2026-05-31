@@ -14,6 +14,8 @@ import tt.chat.vc.entity.SessionListener;
 import tt.chat.vc.entity.security.AccountUser;
 import tt.chat.vc.service.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.time.LocalDate;
@@ -26,7 +28,7 @@ import java.util.Optional;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/video")
+@RequestMapping("/")
 public class VideoController {
     private final TourDao tourDao;
     private final UserService userService;
@@ -36,16 +38,23 @@ public class VideoController {
     private final RtspTokenService rtspTokenService;
     private final ZonedDateTime nowNovosibirsk = ZonedDateTime.now(ZoneId.of("Asia/Novosibirsk"));
     private final LocalDate currentDate = nowNovosibirsk.toLocalDate();
-    private static final String START_URL = "https://cdn.fast.jwp.services/v1/channel/0_zetjamzo_Hplllvlc/manifest/3.m3u8";
+    private static final String START_URL = "https://vs-sport.online/video-proxy?url=https%3A%2F%2Fcdn.fast.jwp.services%2Fv1%2Fchannel%2F0_zetjamzo_Hplllvlc%2Fmanifest%2F3.m3u8";
+//    private static final String START_URL = "https://cdn.fast.jwp.services/v1/channel/0_zetjamzo_Hplllvlc/manifest/3.m3u8";
     private static final Long START_TOUR_ID = 0L;
-    @GetMapping
+
+    @GetMapping("/")
+    public String redirectToVideo() {
+        return "redirect:/video";
+    }
+    @GetMapping("/video")
     public String video(Model model, HttpSession httpSession, Principal principal) {
+        String proxiedUrl = getProxiedUrl(START_URL);
         setAttributeHttpSessionAndModel(httpSession, model, principal, START_TOUR_ID, START_URL);
         model.addAttribute("singleCameraMode", true);
         model.addAttribute("activeCamera", 2);
         return "video/video";
     }
-    @GetMapping("/{tourId}")
+    @GetMapping("/video/{tourId}")
     public String videoCurrent(Model model, HttpSession httpSession, Principal principal,
                                @PathVariable(name = "tourId") Long tourId) {
         Tour currentTour = tourDao.findTourById(tourId);
@@ -79,32 +88,38 @@ public class VideoController {
         model.addAttribute("messages", chatService.getRecentStreamChatMessages(currentTourId));
         model.addAttribute("images", getImagesId(currentTourId));
     }
-    @GetMapping("/rules")
+    @GetMapping("/video/rules")
     public String rules() {
         return "rules/rules";
     }
-    @GetMapping("/rulesVideoStream")
+    @GetMapping("/video/rulesVideoStream")
     public String rulesVideoStream() {
         return "rules/rulesVideoStream";
     }
 
-    @GetMapping("/rtsp-stream")
-    public String getRtspStream(Model model) throws NoSuchAlgorithmException {
-        String streamUrl = rtspTokenService.getStreamUrl();
-        model.addAttribute("streamUrl", streamUrl);
-        return "rtsp-player";
-    }
-
-//    private String getVideoUrlForTour(Long tourId) {
-//        switch(true) {
-//            case "CAM1":
-//                return "http://localhost:1984/stream.html?src=cam1";
-//            case "CAM2":
-//                return "https://cdn.fast.jwp.services/v1/channel/0_zetjamzo_Hplllvlc/manifest/3.m3u8";
-//            default:
-//                return "https://vk.com/video_ext.php?oid=-106879986&id=456252669&hash=5d26418cb04251ab&hd";
+//    private String getProxiedUrl(String originalUrl) {
+//        String proxyBase = "http://85.137.167.217:3000/proxy?url=";
+//        try {
+//            return proxyBase + URLEncoder.encode(originalUrl, "UTF-8");
+//        } catch (UnsupportedEncodingException e) {
+//            return originalUrl;
 //        }
 //    }
+    private String getProxiedUrl(String originalUrl) {
+        String proxyBase = "/video-proxy?url=";
+        try {
+            return proxyBase + URLEncoder.encode(originalUrl, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return originalUrl;
+        }
+    }
+//    @GetMapping("/video/rtsp-stream")
+//    public String getRtspStream(Model model) throws NoSuchAlgorithmException {
+//        String streamUrl = rtspTokenService.getStreamUrl();
+//        model.addAttribute("streamUrl", streamUrl);
+//        return "rtsp-player";
+//    }
+
 }
 
 

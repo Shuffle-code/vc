@@ -149,63 +149,63 @@
                     <div class="card">
                         <div class="card-header py-2">
                             <h6 class="mb-0 fw-semibold">Активные трансляции</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="row g-3">
-                                <div class="justify-content-center">
-                                    <span th:if="${tours.size() == 0}">Трансляций нет</span>
-                                    <div th:unless="${tours.size() == 0}">
-                                        <div class="w-100">
-                                            <table class="table table-striped table-hover w-100 table" >
-                                                <thead class="bg-light">
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="justify-content-center">
+                                        <span th:if="${tours.size() == 0}">Трансляций нет</span>
+                                        <div th:unless="${tours.size() == 0}">
+                                            <div class="w-100">
+                                                <table class="table table-striped table-hover w-100 table" >
+                                                    <thead class="bg-light">
                                                     <th scope="col" class="fw-medium"></th>
                                                     <th scope="col" class="fw-medium">Адрес</th>
                                                     <th scope="col" class="fw-medium text-center">Кол-во игроков</th>
                                                     <th scope="col" >Перейти</th>
-                                                </thead>
-                                                <tbody data-mdb-spy="scroll">
-                                                <tr th:each="tour, i : ${tours}">
-                                                    <td th:text="${tour.title}"></td>
-                                                    <td th:text="${tour.address.getStreet + ', ' + #numbers.formatDecimal(tour.address.house, 1, 0)}"></td>
-                                                    <td th:text="${(tour.amountPlayers == null)}? '0' : ${tour.amountPlayers}" class="text-center"></td>
-                                                    <td>
-                                                        <a type="button" th:href="@{'/video/' + ${tour.id}}" class="btn btn-outline-secondary"
-                                                           th:if="${tour.id != tourId}">Перейти</a>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                                <tfoot>
-                                                </tfoot>
-                                            </table>
+                                                    </thead>
+                                                    <tbody data-mdb-spy="scroll">
+                                                    <tr th:each="tour, i : ${tours}">
+                                                        <td th:text="${tour.title}"></td>
+                                                        <td th:text="${tour.address.getStreet + ', ' + #numbers.formatDecimal(tour.address.house, 1, 0)}"></td>
+                                                        <td th:text="${(tour.amountPlayers == null)}? '0' : ${tour.amountPlayers}" class="text-center"></td>
+                                                        <td>
+                                                            <a type="button" th:href="@{'/video/' + ${tour.id}}" class="btn btn-outline-secondary"
+                                                               th:if="${tour.id != tourId}">Перейти</a>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                    <tfoot>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="d-flex gap-2">
-                                        <button class="btn btn-primary">
-                                            <a class="btn btn-primary" th:href="@{/observer/all}">
-                                                <i class="bi bi-chat-left-text me-1"></i> Участники трансляции
-                                            </a>
-                                        </button>
-                                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                            <i class="bi bi-database-check me-1"></i>Турнирная таблица
-                                        </button>
+                                    <div class="col-12">
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-primary">
+                                                <a class="btn btn-primary" th:href="@{/observer/all}">
+                                                    <i class="bi bi-chat-left-text me-1"></i> Участники трансляции
+                                                </a>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                <i class="bi bi-database-check me-1"></i>Турнирная таблица
+                                            </button>
 
-                                        <button class="btn btn-outline-warning">
-                                            <a th:href="@{/tour/all}" class="text-decoration-none">
-                                            <i class="bi bi-arrow-repeat me-1"></i>Расписание турниров
-                                            </a>
-                                        </button>
-                                        <!-- Модальное окно -->
-                                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal-xl">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div th:each="imgId : ${images}" class="d-flex container mb-3">
-                                                            <img th:src="@{'/tour/images/' + ${imgId}}" class="img-fluid" alt="Результат">
+                                            <button class="btn btn-outline-warning">
+                                                <a th:href="@{/tour/all}" class="text-decoration-none">
+                                                    <i class="bi bi-arrow-repeat me-1"></i>Расписание турниров
+                                                </a>
+                                            </button>
+                                            <!-- Модальное окно -->
+                                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-xl">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div th:each="imgId : ${images}" class="d-flex container mb-3">
+                                                                <img th:src="@{'/tour/images/' + ${imgId}}" class="img-fluid" alt="Результат">
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -215,6 +215,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -565,10 +566,10 @@
             });
         }
     });
+
     document.addEventListener('DOMContentLoaded', function() {
         const video = document.getElementById('tableTennisVideo');
-        const videoUrl = 'https://cdn.fast.jwp.services/v1/channel/0_zetjamzo_Hplllvlc/manifest/3.m3u8';
-        video.muted = true;
+        const videoUrl = 'https://vs-sport.online/video-proxy?url=https%3A%2F%2Fcdn.fast.jwp.services%2Fv1%2Fchannel%2F0_zetjamzo_Hplllvlc%2Fmanifest%2F3.m3u8'
         if (video && Hls.isSupported()) {
             const hls = new Hls();
             hls.loadSource(videoUrl);

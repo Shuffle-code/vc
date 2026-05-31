@@ -20,7 +20,7 @@ public class EmailService {
 
             message.setFrom(from);
             message.setTo(email);
-            message.setSubject("Приложение: '_ViddeoStrim TT Nsk_'");
+            message.setSubject("Приложение: '_ViddeoStrim-Sport_'");
             message.setText("\nВаш код для подтверждения регистрации: \n" + code + "\nС Уважением администрация: \n" +
                     "vs-sport.online");
 

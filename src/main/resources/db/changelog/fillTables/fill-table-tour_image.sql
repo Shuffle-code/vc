@@ -1,2 +1,2 @@
 INSERT INTO tour_image
-VALUES (0, 'TOUR.JPG', 0);
+VALUES (0, 'TOUR.JPG','TOUR_thumb.JPG', 0);

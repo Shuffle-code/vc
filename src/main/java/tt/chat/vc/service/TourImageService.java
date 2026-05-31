@@ -11,8 +11,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import tt.chat.vc.dao.TourDao;
 import tt.chat.vc.dao.TourImageDao;
-import tt.chat.vc.entity.Observer;
-import tt.chat.vc.entity.ObserverImage;
+
+import java.awt.*;
+import java.io.ByteArrayOutputStream;
 import tt.chat.vc.entity.Tour;
 import tt.chat.vc.entity.TourImage;
 import tt.chat.vc.exception.StorageException;
@@ -33,7 +34,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TourImageService {
     private static final String path = "tours";
+    private static final String THUMBNAIL_SUFFIX = "_thumb";
+
+    private static final int THUMBNAIL_WIDTH = 150;
+    private static final int THUMBNAIL_HEIGHT = 150;
     private final String startImage = "TOUR.JPG";
+    private final String startImageThumb = "TOUR_thumb.JPG";
     @Value("${storage.location}")
     private String storagePath;
     private final TourImageDao tourImageDao;
@@ -87,12 +93,18 @@ public class TourImageService {
 
 
     // сохроняем файл(картинку) из клиента в директорию на сервере с помощью - save(multipartFile), + сбилдили TourImage и сохранили данный турнир
-    public Tour saveTourImage(Long tourId, MultipartFile multipartFile) {
+    public Tour saveTourImage(Long tourId, MultipartFile multipartFile) throws IOException {
         if (!multipartFile.isEmpty()) {
             Tour tour = tourDao.getReferenceById(tourId);
             String pathToSavedFile = save(multipartFile);
+            String existingThumbnail = getThumbnailPathByTourId(tourId);
+            if (existingThumbnail.equals("TOUR_thumb.JPG") || existingThumbnail == null) {
+                createAndSaveThumbnail(tourId);
+            }
+            String thumbnailPath = getThumbnailPathByTourId(tourId);
             TourImage tourImage = TourImage.builder()
                     .path(pathToSavedFile)
+                    .thumbnailPath(thumbnailPath)
                     .tour(tour)
                     .build();
             tour.addImage(tourImage);
@@ -149,12 +161,27 @@ public class TourImageService {
         }
     }
 
+//    public void deleteImageTour(Long idImage) {
+//        if (idImage != null){
+//            tourImageDao.deleteById(idImage);
+//        }
+//    }
+
+
     public void deleteImageTour(Long idImage) {
-        if (idImage != null){
+        if (idImage != null) {
+            // Удаляем миниатюру
+            TourImage tourImage = tourImageDao.findById(idImage).orElse(null);
+            if (tourImage != null && tourImage.getThumbnailPath() != null) {
+                try {
+                    Files.deleteIfExists(rootLocation.resolve(path).resolve(tourImage.getThumbnailPath()));
+                } catch (IOException e) {
+                    log.error("Failed to delete thumbnail: {}", e.getMessage());
+                }
+            }
             tourImageDao.deleteById(idImage);
         }
     }
-
     public void deleteStartImage(TourImage tourImage){
         Long idTour = tourImage.getTour().getId();
         TourImage image = tourImageDao.findFirstByTourId(idTour);
@@ -167,6 +194,7 @@ public class TourImageService {
     public void addStartImage(Tour tour){
         TourImage tourImage = new TourImage();
         tourImage.setPath(startImage);
+        tourImage.setThumbnailPath(startImageThumb);
         tourImage.setTour(tour);
         tourImageDao.save(tourImage);
     }
@@ -179,4 +207,110 @@ public class TourImageService {
     public Long getTourIdByImageId(Long id) {
         return tourImageDao.findTourIdByImageId(id);
     }
+
+
+    /**
+     * Изменяет размер изображения
+     */
+    private BufferedImage resizeImage(BufferedImage original, int targetWidth, int targetHeight) {
+        BufferedImage resized = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+        java.awt.Graphics2D g = resized.createGraphics();
+
+        // Включаем сглаживание для лучшего качества
+        g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION,
+                java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.setRenderingHint(java.awt.RenderingHints.KEY_RENDERING,
+                java.awt.RenderingHints.VALUE_RENDER_QUALITY);
+        g.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING,
+                java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+
+        g.drawImage(original, 0, 0, targetWidth, targetHeight, null);
+        g.dispose();
+
+        return resized;
+    }
+    /**
+     * Загружает миниатюру по имени файла
+     */
+    public Resource loadThumbnail(String filename) {
+        String baseName = filename.substring(0, filename.lastIndexOf('.'));
+        String extension = filename.substring(filename.lastIndexOf('.'));
+        String thumbnailName = baseName + THUMBNAIL_SUFFIX + extension;
+        return loadAsResource(thumbnailName);
+    }
+
+    /**
+     * Загружает миниатюру по ID тура
+     */
+    public Resource loadThumbnailByTourId(Long tourId) {
+        String originalImageName = uploadMultipleFilesByTourId(tourId);
+        if (originalImageName != null) {
+            return loadThumbnail(originalImageName);
+        }
+        return null;
+    }
+
+    /**
+     * Загружает миниатюру по ID изображения
+     */
+    public Resource loadThumbnailByImageId(Long imageId) {
+        String originalImageName = uploadMultipleFilesByImageId(imageId);
+        if (originalImageName != null) {
+            return loadThumbnail(originalImageName);
+        }
+        return null;
+    }
+
+    /**
+     * Получить путь к миниатюре по ID тура
+     */
+    public String getThumbnailPathByTourId(Long tourId) {
+        TourImage tourImage = tourImageDao.findFirstByTourId(tourId);
+        return tourImage != null ? tourImage.getThumbnailPath() : null;
+    }
+
+    /**
+     * Создать и сохранить миниатюру для тура
+     */
+    public byte[] createAndSaveThumbnail(Long tourId) throws IOException {
+        String originalImageName = uploadMultipleFilesByTourId(tourId);
+        if (originalImageName == null) {
+            return null;
+        }
+
+        BufferedImage original = loadFileAsImage(tourId);
+        if (original == null) {
+            return null;
+        }
+        BufferedImage thumbnail = new BufferedImage(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, original.getType());
+        Graphics2D g = thumbnail.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.drawImage(original, 0, 0,THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, null);
+        g.dispose();
+
+        // Сохраняем файл
+        String thumbnailName = originalImageName.replace(".", "_thumb.");
+        Path thumbnailPath = rootLocation.resolve(path).resolve(thumbnailName);
+        ImageIO.write(thumbnail, "png", thumbnailPath.toFile());
+
+        // ✅ СОХРАНЯЕМ В БД
+        TourImage tourImage = tourImageDao.findFirstByTourId(tourId);
+        if (tourImage != null) {
+            tourImage.setThumbnailPath(thumbnailName);
+            tourImageDao.save(tourImage);
+        }
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(thumbnail, "png", baos);
+        return baos.toByteArray();
+    }
+    public Long getThumbnailImageIdByTourId(Long tourId) {
+        TourImage tourImage = tourImageDao.findFirstByTourId(tourId);
+        if (tourImage != null && tourImage.getThumbnailPath() != null) {
+            // Ищем TourImage с путем = thumbnailPath
+            return tourImageDao.findIdByPath(tourImage.getThumbnailPath());
+        }
+        return null;
+    }
+
 }

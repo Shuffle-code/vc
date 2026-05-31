@@ -38,12 +38,14 @@ public class SessionListener implements HttpSessionListener {
     @Override
     public void sessionDestroyed(HttpSessionEvent event) {
         activeSessions.updateAndGet(value -> value > 0 ? value - 1 : 0);
+        log.info(activeSessions.toString());
         HttpSession session = event.getSession();
         // Проверяем, была ли сессия аутентифицирована
         AccountUser accountUser = getUserFromSession(session);
         if (session.getAttribute("SPRING_SECURITY_CONTEXT") != null) {
             authenticatedSessions.decrementAndGet();
         }
+//        activeSessions.decrementAndGet();
         log.info("Сессия уничтожена. Активных сессий: " + activeSessions.get());
         if (accountUser != null) {
             // Сессия истекла без выхода - ставим OFFLINE

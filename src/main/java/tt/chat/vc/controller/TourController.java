@@ -10,30 +10,26 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import tt.chat.vc.dao.TourDao;
 import tt.chat.vc.dao.security.AccountRoleDao;
 import tt.chat.vc.entity.Tour;
-import tt.chat.vc.entity.enums.TourStatus;
 import tt.chat.vc.entity.security.AccountRole;
 import tt.chat.vc.entity.security.AccountUser;
 import tt.chat.vc.service.*;
-
+import jakarta.servlet.http.HttpSession;
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpSession;
 import java.io.ByteArrayOutputStream;
-import java.math.BigDecimal;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.*;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 @Controller
-@RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/tour")
+@RequiredArgsConstructor
 public class TourController {
     private final ObserverService observerService;
-    private final TourDao tourDao;
+//    private final TourDao tourDao;
     private final UserService userService;
     private final AddressService addressService;
     private final TourService tourService;
@@ -122,13 +118,20 @@ public class TourController {
             return "tour/tour-add";
         }
         tourService.save(tour);
-        uploadMultipleFiles(files, tourDao.findById(tour.getId()).get().getId());
+        uploadMultipleFiles(files, tourService.getIdByTournamentId(tour.getId()));
+//        uploadMultipleFiles(files, tourDao.findById(tour.getId()).get().getId());
         return "redirect:/tour/all";
     }
 
     public void uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, Long id) {
         Arrays.stream(files)
-                .map(file -> tourImageService.saveTourImage(id, file))
+                .map(file -> {
+                    try {
+                        return tourImageService.saveTourImage(id, file);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .collect(Collectors.toList());
     }
     @GetMapping("/delete/{id}")
@@ -162,6 +165,49 @@ public class TourController {
         }
         return new byte[]{};
     }
+
+    @GetMapping(value = "/thumbnail/{tourId}", produces = MediaType.IMAGE_PNG_VALUE)
+    @ResponseBody
+    @PreAuthorize("hasAnyAuthority('observer.read') || isAnonymous()")
+    public byte[] getThumbnail(@PathVariable Long tourId) {
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            // Получаем ID изображения-миниатюры по ID тура
+            Long thumbnailImageId = tourImageService.getThumbnailImageIdByTourId(tourId);
+
+            if (thumbnailImageId != null) {
+                // Если миниатюра есть — отдаём её
+                ImageIO.write(tourImageService.loadFileAsImage(thumbnailImageId), "png", byteArrayOutputStream);
+                return byteArrayOutputStream.toByteArray();
+            } else {
+                // Если миниатюры нет — создаём из оригинального фото
+                byte[] thumbnail = tourImageService.createAndSaveThumbnail(tourId);
+                if (thumbnail != null) {
+                    return thumbnail;
+                }
+                return new byte[]{};
+            }
+        } catch (Exception e) {
+            log.error("Error loading thumbnail for tour {}: {}", tourId, e.getMessage());
+            return new byte[]{};
+        }
+    }
+
+    @GetMapping("/generate-thumbnails")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String generateAllThumbnails() {
+        List<Tour> tours = tourService.findAll();
+        int count = 0;
+        for (Tour tour : tours) {
+            try {
+                tourImageService.createAndSaveThumbnail(tour.getId());
+                count++;
+            } catch (Exception e) {
+                log.error("Failed for tour {}: {}", tour.getId(), e.getMessage());
+            }
+        }
+        return "redirect:/tour/all?thumbnailsGenerated=" + count;
+    }
+
     @DeleteMapping("/image_delete/{id}")
     @PreAuthorize("hasAnyAuthority('observer.create')")
     public void imageDelete(@PathVariable(name = "id") Long idImage){

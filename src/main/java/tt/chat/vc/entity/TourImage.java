@@ -21,11 +21,15 @@ public class TourImage extends BaseEntity {
     @Column(name = "path")
     private String path;
 
+    @Column(name = "thumbnail_path")
+    private String thumbnailPath;
+
     @Builder
-    public TourImage(Long id, Tour tour, String path) {
+    public TourImage (Long id, Tour tour, String path, String thumbnailPath) {
         super(id);
         this.tour = tour;
         this.path = path;
+        this.thumbnailPath = thumbnailPath;
     }
     @Override
     public boolean equals(Object o) {

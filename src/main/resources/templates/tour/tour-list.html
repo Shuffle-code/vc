@@ -50,7 +50,7 @@
                 <td th:text="${(tour.amountPlayers == null)}? '0' : ${tour.amountPlayers}" class="text-end"></td>
                 <td>
                     <div >
-                        <img th:src="@{'/tour/image/' + ${tour.id}}" alt="" width="40px" height="40" class="rounded-circle" />
+                        <img th:src="@{'/tour/thumbnail/' + ${tour.id}}" alt="" width="40px" height="40" class="rounded-circle" />
                     </div>
                 </td>
 <!--                <td th:text="${(tour.observer == null)}? '' : ${tour.observer.getFirstname + ' ' + tour.observer.getLastname}"></td>-->

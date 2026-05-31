@@ -1,25 +1,23 @@
 server:
+  port: 443
   servlet:
     encoding:
       charset: UTF-8
       enabled: true
       force: true
-      session:
-        timeout: 8h
-  port: 1975
-  ssl:
-    enabled: true
-    key-store-type: "PKCS12"
-    key-store: "classpath:keystore.p12"
-    key-store-password: ${KEYSTORE_PASSWORD:shuffle}
-    key-alias: "tomcat"
+    session:
+      timeout: 8h
+#  ssl:
+#    enabled: true
+#    key-store-type: "PKCS12"
+#    key-store: file:C:\Users\79130\IdeaProjects\VC\src\main\resources\keystore.p12
+#    key-store-password: ${SSL_KEY_PASSWORD:Edcvt12!}
+#    key-alias: vs-sport
 
   logging:
     charset:
       console: UTF-8
       file: UTF-8
-
-
 
 spring:
   thymeleaf:
@@ -54,15 +52,6 @@ spring:
     url: "jdbc:postgresql://localhost:5439/ttvc"
     username: ${DB_USERNAME:shuffle}
     password: ${DB_PASSWORD:shuffle}
-  ssl:
-    enabled: true
-    key-store-type: "PKCS12"
-    key-store: "classpath:keystore.p12"
-    key-store-password: ${KEYSTORE_PASSWORD:shuffle}
-    key-alias: "tomcat"
-
-
-
 
 storage:
   location: ${STORAGE_LOCATION:./storage}
@@ -71,6 +60,7 @@ springdoc:
   show-login-endpoint: true
 
 ---
+
 spring:
   config:
     activate:
@@ -79,9 +69,18 @@ spring:
     url: "jdbc:postgresql://localhost:5432/ttvc"
     username:  ${PROD_DB_USERNAME:shuffle}
     password:  ${PROD_DB_PASSWORD:rfvby}
-  storage:
-    location: '/home/shuffle/java/storage'
 
+server:  # ← server на уровне профиля prod
+  port: 443
+  ssl:   # ← ssl ВНУТРИ server
+    enabled: true
+    key-store-type: "PKCS12"
+    key-store: file:/opt/vc-app/keystore.p12
+    key-store-password: ${SSL_KEY_PASSWORD:Edcvt12!}
+    key-alias: vs-sport
+
+storage:
+  location: /opt/vc-app/storage
 
 ---
 spring:
@@ -92,5 +91,14 @@ spring:
     url: "jdbc:postgresql://localhost:5439/ttvc"
     username: ${DEV_DB_USERNAME:shuffle}
     password: ${DEV_DB_PASSWORD:shuffle}
-  storage:
-    location: ${STORAGE_LOCATION:./storage}
+
+storage:
+  location: ./storage
+server:
+  port: 443
+#  ssl:
+#    enabled: false
+#    key-store-type: "PKCS12"
+#    key-store: "classpath:keystore.p12"
+#    key-store-password: ${KEYSTORE_PASSWORD:shuffle}
+#    key-alias: "tomcat"

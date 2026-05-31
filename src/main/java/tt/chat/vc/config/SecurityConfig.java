@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.web.filter.ForwardedHeaderFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -22,11 +23,11 @@ public class SecurityConfig{
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/registration","/auth/register","/observer/image/**","/video",
+                        .requestMatchers("/auth/registration","/auth/register","/observer/image/**","/video", "/",
                                 "/swagger-ui.html/**", "/auth/confirmation", "/observer/images/*", "/login","auth/login",
                                 "/auth/invalid-confirmation", "/video/rules", "/observer/all","/observer/**","/tour/**",
                                 "/tour/all", "/tour/image/**", "/tour/images/**", "/css/**","/video/**","/api/streams/**",
-                                "/js/**", "/script/**", "/static/**", "/websocket/**")
+                                "/js/**", "/script/**", "/static/**", "/websocket/**", "/video-proxy")
                         .permitAll()
                         .anyRequest().authenticated()
 
